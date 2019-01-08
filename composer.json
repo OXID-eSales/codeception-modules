@@ -1,0 +1,23 @@
+{
+  "name": "oxideshop/codeception-module",
+  "description": "Codeception helper module for OXID eShop",
+  "keywords": [
+    "oxid",
+    "codeception",
+    "helper",
+    "eShop"
+  ],
+  "homepage": "https://www.oxid-esales.com/en/home.html",
+  "license": [
+    "GPL-3.0-only",
+    "proprietary"
+  ],
+  "require": {
+    "symfony/translation": "^4.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "OxidEsales\\Codeception\\": "src"
+    }
+  }
+}
