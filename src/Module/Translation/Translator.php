@@ -1,24 +1,19 @@
 <?php
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
 
-namespace OxidEsales\Codeception\Module;
+namespace OxidEsales\Codeception\Module\Translation;
 
 use Symfony\Component\Translation\Translator as SymfonyTranslator;
 
-class Translator
+class Translator implements TranslatorInterface
 {
     /**
      * @var SymfonyTranslator
      */
     private static $sfTranslator;
-
-    /**
-     * Constructor.
-     *
-     * @param array $paths
-     */
-    public function __construct($paths)
-    {
-    }
 
     public static function initialize($paths)
     {
