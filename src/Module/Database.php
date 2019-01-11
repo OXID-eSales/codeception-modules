@@ -1,12 +1,13 @@
 <?php
 namespace OxidEsales\Codeception\Module;
 
+use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module\Db;
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
-class Database extends \Codeception\Module
+class Database extends \Codeception\Module implements DependsOnModule
 {
 
     /**
@@ -52,20 +53,22 @@ class Database extends \Codeception\Module
         /** @var \Codeception\Module\Db $dbModule */
         $dbModule = $this->db;
         $record = $dbModule->grabNumRecords('oxconfig', ['oxvarname' => $name]);
+        $dbh = $dbModule->dbh;
         if ($record > 0) {
             $query = "update oxconfig set oxvarvalue=ENCODE( :value, 'fq45QS09_fqyx09239QQ') where oxvarname=:name";
-            $params = ['name' => $name, 'value' => $value];
+            $sth = $dbh->prepare($query);
+            $sth->execute(['name' => $name, 'value' => $value]);
         } else {
             $query = "insert into oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue)
                        values(:oxid, 1, :name, :type, ENCODE( :value, 'fq45QS09_fqyx09239QQ'))";
-            $params = [
+            $sth = $dbh->prepare($query);
+            $sth->execute([
                 'oxid' => md5($name.$type),
                 'name' => $name,
                 'type' => $type,
                 'value' => $value
-            ];
+            ]);
         }
-        $this->db->driver->executeQuery($query, $params);
     }
 
 }

@@ -23,16 +23,11 @@ class TranslationsModule extends \Codeception\Module
      */
     protected $requiredFields = ['shop_path'];
 
-    /**
-     * @var Translator
-     */
-    private $translator;
-
     public function _initialize()
     {
         parent::_initialize();
 
-        $this->translator = new Translator($this->getLanguageDirectoryPaths());
+        Translator::initialize($this->getLanguageDirectoryPaths());
     }
 
     /**
@@ -42,7 +37,7 @@ class TranslationsModule extends \Codeception\Module
      */
     public function translate($string)
     {
-        return $this->translator->translate($string);
+        return Translator::translate($string);
     }
 
     private function getLanguageDirectoryPaths()

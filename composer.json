@@ -1,5 +1,5 @@
 {
-  "name": "oxideshop/codeception-module",
+  "name": "oxid-esales/codeception-module",
   "description": "Codeception helper module for OXID eShop",
   "keywords": [
     "oxid",

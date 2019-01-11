@@ -7,9 +7,9 @@ use Symfony\Component\Translation\Translator as SymfonyTranslator;
 class Translator
 {
     /**
-     * @var array
+     * @var SymfonyTranslator
      */
-    private $sfTranslator;
+    private static $sfTranslator;
 
     /**
      * Constructor.
@@ -18,26 +18,31 @@ class Translator
      */
     public function __construct($paths)
     {
-        $this->sfTranslator = new SymfonyTranslator('en');
-
-        $this->sfTranslator->addLoader('oxphp', new LanguageDirectoryReader());
-
-        $languageDir = $this->getLanguageDirectories($paths, 'de');
-
-        $this->sfTranslator->addResource('oxphp', $languageDir, 'de');
-
-        $languageDir = $this->getLanguageDirectories($paths, 'en');
-
-        $this->sfTranslator->addResource('oxphp', $languageDir, 'en');
     }
+
+    public static function initialize($paths)
+    {
+        self::$sfTranslator = new SymfonyTranslator('en');
+
+        self::$sfTranslator->addLoader('oxphp', new LanguageDirectoryReader());
+
+        $languageDir = self::getLanguageDirectories($paths, 'de');
+
+        self::$sfTranslator->addResource('oxphp', $languageDir, 'de');
+
+        $languageDir = self::getLanguageDirectories($paths, 'en');
+
+        self::$sfTranslator->addResource('oxphp', $languageDir, 'en');
+    }
+
     /**
      * @param string $string
      *
      * @return string
      */
-    public function translate($string)
+    public static function translate($string)
     {
-        return $this->sfTranslator->trans($string);
+        return self::$sfTranslator->trans($string);
     }
 
     /**
@@ -48,7 +53,7 @@ class Translator
      *
      * @return array
      */
-    private function getLanguageDirectories($paths, $language)
+    private static function getLanguageDirectories($paths, $language)
     {
         $languageDirectories = [];
 
