@@ -6,7 +6,7 @@ Codeception helper module for OXID eShop
   You need to add the repository into your composer.json file
 
 ```
-  composer require --dev oxideshop/codeception-module
+  composer require --dev oxid-esales/codeception-module
 ```
 
 ##Modules
@@ -19,10 +19,11 @@ Codeception helper module for OXID eShop
 ```yml
   modules:
       enabled:
-          - \OxidEsales\Codeception\Module\OXIDeShop
+          - \OxidEsales\Codeception\Module\Oxideshop
           - \OxidEsales\Codeception\Module\Database:
             depends: Db
-          - \OxidEsales\Codeception\Module\TranslationsModule:
+            config_key: XXXXXXXXX
+          - \OxidEsales\Codeception\Module\Translation\TranslationsModule:
             shop_path: '%SHOP_SOURCE_PATH%'
             paths: 'Application/views/flow'
 ```

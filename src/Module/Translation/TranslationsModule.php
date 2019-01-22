@@ -1,5 +1,10 @@
 <?php
-namespace OxidEsales\Codeception\Module;
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
+namespace OxidEsales\Codeception\Module\Translation;
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I

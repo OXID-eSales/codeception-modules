@@ -1,27 +1,45 @@
 <?php
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 namespace OxidEsales\Codeception\Module;
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
-class OXIDeShop extends \Codeception\Module
+use Codeception\Exception\ModuleException;
+
+class Oxideshop extends \Codeception\Module
 {
+    /**
+     * Clear browser cache
+     */
     public function clearShopCache()
     {
         $this->getModule('WebDriver')->_restart();
     }
 
+    /**
+     * Clean up database
+     */
     public function cleanUp()
     {
-        $this->getModule('Db')->_beforeSuite();
-        $this->getModule('Db')->_cleanup();
-    }
+        /** @var \Codeception\Module\Db $db */
+        $db = $this->getModule('Db');
+        $config = $db->_getConfig();
+        $config['cleanup'] = true;
 
+        try {
+            $db->_cleanup(null, $config);
+        } catch (\Exception $e) {
+            throw new ModuleException(__CLASS__, $e->getMessage());
+        }
+    }
 
     /**
      * Removes \n signs and it leading spaces from string. Keeps only single space in the ends of each row.
-     *
-     * TODO: duplicate?
      *
      * @param string $line Not formatted string (with spaces and \n signs).
      *
