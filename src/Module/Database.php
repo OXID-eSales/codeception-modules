@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 namespace OxidEsales\Codeception\Module;
 
 use Codeception\Lib\Interfaces\DependsOnModule;
@@ -9,6 +14,10 @@ use Codeception\Module\Db;
 
 class Database extends \Codeception\Module implements DependsOnModule
 {
+    /**
+     * @var array
+     */
+    protected $requiredFields = ['config_key'];
 
     /**
      * @var Db
@@ -35,40 +44,46 @@ class Database extends \Codeception\Module implements DependsOnModule
      * Delete entries from $table where $criteria conditions
      * Use: $I->deleteFromDatabase('users', ['id' => '111111', 'banned' => 'yes']);
      *
-     * @param  string $table    tablename
-     * @param  array $criteria conditions. See seeInDatabase() method.
+     * @param string $table    The name of table.
+     * @param array  $criteria The conditions. See seeInDatabase() method.
      */
     public function deleteFromDatabase($table, $criteria)
     {
-        $this->db->driver->deleteQueryByCriteria($table, $criteria);
+        $this->db->_getDriver()->deleteQueryByCriteria($table, $criteria);
     }
 
     /**
-     * @param string $name
-     * @param mixed  $value
-     * @param string $type
+     * Update values in the config table.
+     *
+     * @param string $name  The name of config parameter.
+     * @param mixed  $value The value of config parameter.
+     * @param string $type  The type of config parameter.
      */
     public function updateConfigInDatabase($name, $value, $type='bool')
     {
         /** @var \Codeception\Module\Db $dbModule */
-        $dbModule = $this->db;
-        $record = $dbModule->grabNumRecords('oxconfig', ['oxvarname' => $name]);
-        $dbh = $dbModule->dbh;
+        $record = $this->db->grabNumRecords('oxconfig', ['oxvarname' => $name]);
+        $dbh = $this->db->_getDbh();
+        $configKey = $this->config['config_key'];
         if ($record > 0) {
-            $query = "update oxconfig set oxvarvalue=ENCODE( :value, 'fq45QS09_fqyx09239QQ') where oxvarname=:name";
-            $sth = $dbh->prepare($query);
-            $sth->execute(['name' => $name, 'value' => $value]);
+            $query = "update oxconfig set oxvarvalue=ENCODE( :value, :config) where oxvarname=:name";
+            $parameters = [
+                'name' => $name,
+                'value' => $value,
+                'config' => $configKey
+            ];
         } else {
             $query = "insert into oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue)
-                       values(:oxid, 1, :name, :type, ENCODE( :value, 'fq45QS09_fqyx09239QQ'))";
-            $sth = $dbh->prepare($query);
-            $sth->execute([
+                       values(:oxid, 1, :name, :type, ENCODE( :value, :config))";
+            $parameters = [
                 'oxid' => md5($name.$type),
                 'name' => $name,
                 'type' => $type,
-                'value' => $value
-            ]);
+                'value' => $value,
+                'config' => $configKey
+            ];
         }
+        $sth = $dbh->prepare($query);
+        $sth->execute($parameters);
     }
-
 }
