@@ -8,7 +8,7 @@ namespace OxidEsales\Codeception\Module\Translation;
 
 use Symfony\Component\Translation\Translator as SymfonyTranslator;
 
-class Translator
+class Translator implements TranslatorInterface
 {
     /**
      * @var SymfonyTranslator

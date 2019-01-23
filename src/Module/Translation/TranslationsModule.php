@@ -35,16 +35,6 @@ class TranslationsModule extends \Codeception\Module
         Translator::initialize($this->getLanguageDirectoryPaths());
     }
 
-    /**
-     * @param string $string
-     *
-     * @return string
-     */
-    public function translate($string)
-    {
-        return Translator::translate($string);
-    }
-
     private function getLanguageDirectoryPaths()
     {
         $fullPaths = [];
