@@ -16,9 +16,9 @@ class Oxideshop extends \Codeception\Module
     /**
      * Reset context before test
      */
-    public function _before(TestInterface $I)
+    public function _before(\Codeception\TestInterface $test)
     {
-        Context::setActiveUser(null);
+        \OxidEsales\Codeception\Module\Context::setActiveUser(null);
     }
 
     /**
