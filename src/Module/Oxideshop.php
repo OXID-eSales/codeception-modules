@@ -14,6 +14,14 @@ use Codeception\Exception\ModuleException;
 class Oxideshop extends \Codeception\Module
 {
     /**
+     * Reset context before test
+     */
+    public function _before(TestInterface $I)
+    {
+        Context::setActiveUser(null);
+    }
+
+    /**
      * Clear browser cache
      */
     public function clearShopCache()
