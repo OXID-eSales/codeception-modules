@@ -13,7 +13,7 @@
     "proprietary"
   ],
   "require": {
-    "symfony/translation": "^3.4"
+    "symfony/translation": "^3.0"
   },
   "autoload": {
     "psr-4": {
