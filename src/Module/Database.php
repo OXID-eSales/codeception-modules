@@ -49,7 +49,7 @@ class Database extends \Codeception\Module implements DependsOnModule
      */
     public function deleteFromDatabase($table, $criteria)
     {
-        $this->db->_getDriver()->deleteQueryByCriteria($table, $criteria);
+        $this->db->driver->deleteQueryByCriteria($table, $criteria);
     }
 
     /**
