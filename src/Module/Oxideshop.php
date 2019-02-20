@@ -9,10 +9,42 @@ namespace OxidEsales\Codeception\Module;
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
-use Codeception\Exception\ModuleException;
+use Codeception\Lib\Interfaces\DependsOnModule;
+use Codeception\Module\WebDriver;
+use Codeception\Module\Db;
 
-class Oxideshop extends \Codeception\Module
+class Oxideshop extends \Codeception\Module implements DependsOnModule
 {
+    /**
+     * @var WebDriver
+     */
+    private $webDriver;
+
+    /**
+     * @var Db
+     */
+    private $db;
+
+    /**
+     * @return array
+     */
+    public function _depends()
+    {
+        return [
+            WebDriver::class => 'Codeception\Module\WebDriver is required',
+            Db::class => 'Codeception\Module\Db is required'
+        ];
+    }
+
+    /**
+     * @param WebDriver $driver
+     */
+    public function _inject(WebDriver $driver, Db $db)
+    {
+        $this->webDriver = $driver;
+        $this->db = $db;
+    }
+
     /**
      * Reset context before test
      */
@@ -26,7 +58,7 @@ class Oxideshop extends \Codeception\Module
      */
     public function clearShopCache()
     {
-        $this->getModule('WebDriver')->_restart();
+        $this->webDriver->_restart();
     }
 
     /**
@@ -34,16 +66,7 @@ class Oxideshop extends \Codeception\Module
      */
     public function cleanUp()
     {
-        /** @var \Codeception\Module\Db $db */
-        $db = $this->getModule('Db');
-        $config = $db->_getConfig();
-        $config['cleanup'] = true;
-
-        try {
-            $db->_cleanup(null, $config);
-        } catch (\Exception $e) {
-            throw new ModuleException(__CLASS__, $e->getMessage());
-        }
+        $this->db->_beforeSuite([]);
     }
 
     /**
@@ -58,4 +81,22 @@ class Oxideshop extends \Codeception\Module
         return trim(preg_replace("/[ \t\r\n]+/", ' ', $line));
     }
 
+    /**
+     * @param int $timeout
+     */
+    public function waitForAjax($timeout = 60)
+    {
+        $this->webDriver->waitForJS('return !!window.jQuery && window.jQuery.active == 0;', $timeout);
+        $this->webDriver->wait(1);
+    }
+
+
+    /**
+     * @param int $timeout
+     */
+    public function waitForPageLoad($timeout = 60)
+    {
+        $this->webDriver->waitForJs('return document.readyState == "complete"', $timeout);
+        $this->waitForAjax($timeout);
+    }
 }
