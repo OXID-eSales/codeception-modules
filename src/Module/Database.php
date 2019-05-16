@@ -9,9 +9,10 @@ namespace OxidEsales\Codeception\Module;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module\Db;
 
-// here you can define custom actions
-// all public methods declared in helper class will be available in $I
-
+/**
+ * Class Database
+ * @package OxidEsales\Codeception\Module
+ */
 class Database extends \Codeception\Module implements DependsOnModule
 {
     /**
@@ -47,7 +48,7 @@ class Database extends \Codeception\Module implements DependsOnModule
      * @param string $table    The name of table.
      * @param array  $criteria The conditions. See seeInDatabase() method.
      */
-    public function deleteFromDatabase($table, $criteria)
+    public function deleteFromDatabase(string $table, array $criteria)
     {
         $this->db->_getDriver()->deleteQueryByCriteria($table, $criteria);
     }
@@ -59,7 +60,7 @@ class Database extends \Codeception\Module implements DependsOnModule
      * @param mixed  $value The value of config parameter.
      * @param string $type  The type of config parameter.
      */
-    public function updateConfigInDatabase($name, $value, $type='bool')
+    public function updateConfigInDatabase(string $name, $value, string $type='bool')
     {
         /** @var \Codeception\Module\Db $dbModule */
         $record = $this->db->grabNumRecords('oxconfig', ['oxvarname' => $name]);

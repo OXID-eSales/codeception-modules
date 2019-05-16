@@ -12,6 +12,10 @@ use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 
+/**
+ * Class LanguageDirectoryReader
+ * @package OxidEsales\Codeception\Module\Translation
+ */
 class LanguageDirectoryReader extends ArrayLoader
 {
     /**
@@ -42,7 +46,7 @@ class LanguageDirectoryReader extends ArrayLoader
      *
      * @return array
      */
-    protected function loadFile($file)
+    private function loadFile(string $file)
     {
         $aLang = [];
         require $file;
@@ -55,7 +59,7 @@ class LanguageDirectoryReader extends ArrayLoader
      *
      * @return array
      */
-    protected function loadDirectory($messages, $directory)
+    private function loadDirectory(array $messages, string $directory)
     {
         $finder = new Finder();
         $finder->files()->in($directory)->name('*lang.php');

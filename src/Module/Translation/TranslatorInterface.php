@@ -13,6 +13,6 @@ interface TranslatorInterface
      *
      * @return string
      */
-    public static function translate($string);
+    public static function translate(string $string);
 
 }

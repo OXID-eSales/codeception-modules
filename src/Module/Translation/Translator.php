@@ -8,6 +8,10 @@ namespace OxidEsales\Codeception\Module\Translation;
 
 use Symfony\Component\Translation\Translator as SymfonyTranslator;
 
+/**
+ * Class Translator
+ * @package OxidEsales\Codeception\Module\Translation
+ */
 class Translator implements TranslatorInterface
 {
     /**
@@ -15,7 +19,10 @@ class Translator implements TranslatorInterface
      */
     private static $sfTranslator;
 
-    public static function initialize($paths)
+    /**
+     * @param array $paths
+     */
+    public static function initialize(array $paths)
     {
         self::$sfTranslator = new SymfonyTranslator('en');
 
@@ -35,7 +42,7 @@ class Translator implements TranslatorInterface
      *
      * @return string
      */
-    public static function translate($string)
+    public static function translate(string $string)
     {
         return self::$sfTranslator->trans($string);
     }
@@ -48,7 +55,7 @@ class Translator implements TranslatorInterface
      *
      * @return array
      */
-    private static function getLanguageDirectories($paths, $language)
+    private static function getLanguageDirectories(array $paths, string $language)
     {
         $languageDirectories = [];
 
@@ -58,5 +65,4 @@ class Translator implements TranslatorInterface
 
         return $languageDirectories;
     }
-
 }

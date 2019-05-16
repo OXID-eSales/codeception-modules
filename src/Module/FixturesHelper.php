@@ -8,6 +8,10 @@ namespace OxidEsales\Codeception\Module;
 
 use Codeception\Util\Fixtures;
 
+/**
+ * Class FixturesHelper
+ * @package OxidEsales\Codeception\Module
+ */
 class FixturesHelper
 {
     /**
@@ -15,7 +19,7 @@ class FixturesHelper
      *
      * @param string $fixtureFilePath
      */
-    public function loadRuntimeFixtures($fixtureFilePath)
+    public function loadRuntimeFixtures(string $fixtureFilePath)
     {
         $fixtures = require($fixtureFilePath);
         foreach ($fixtures as $key => $data) {

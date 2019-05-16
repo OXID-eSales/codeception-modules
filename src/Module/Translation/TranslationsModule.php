@@ -6,9 +6,10 @@
 
 namespace OxidEsales\Codeception\Module\Translation;
 
-// here you can define custom actions
-// all public methods declared in helper class will be available in $I
-
+/**
+ * Class TranslationsModule
+ * @package OxidEsales\Codeception\Module\Translation
+ */
 class TranslationsModule extends \Codeception\Module
 {
     /**
@@ -28,6 +29,9 @@ class TranslationsModule extends \Codeception\Module
      */
     protected $requiredFields = ['shop_path'];
 
+    /**
+     * Initializes translator
+     */
     public function _initialize()
     {
         parent::_initialize();
@@ -35,6 +39,9 @@ class TranslationsModule extends \Codeception\Module
         Translator::initialize($this->getLanguageDirectoryPaths());
     }
 
+    /**
+     * @return array
+     */
     private function getLanguageDirectoryPaths()
     {
         $fullPaths = [];

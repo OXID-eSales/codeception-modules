@@ -6,13 +6,16 @@
 
 namespace OxidEsales\Codeception\Module;
 
-// here you can define custom actions
-// all public methods declared in helper class will be available in $I
+require_once __DIR__.'/../../../../oxid-esales/testing-library/base.php';
 
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module\WebDriver;
 use Codeception\Module\Db;
 
+/**
+ * Class Oxideshop
+ * @package OxidEsales\Codeception\Module
+ */
 class Oxideshop extends \Codeception\Module implements DependsOnModule
 {
     /**
@@ -46,11 +49,13 @@ class Oxideshop extends \Codeception\Module implements DependsOnModule
     }
 
     /**
-     * Reset context before test
+     * Reset context and activate modules before test
      */
     public function _before(\Codeception\TestInterface $test)
     {
-        \OxidEsales\Codeception\Module\Context::setActiveUser(null);
+        \OxidEsales\Codeception\Module\Context::resetActiveUser();
+        // Activate modules
+        $this->activateModules();
     }
 
     /**
@@ -76,7 +81,7 @@ class Oxideshop extends \Codeception\Module implements DependsOnModule
      *
      * @return string Formatted string with single spaces and no \n signs.
      */
-    public function clearString($line)
+    public function clearString(string $line)
     {
         return trim(preg_replace("/[ \t\r\n]+/", ' ', $line));
     }
@@ -84,19 +89,33 @@ class Oxideshop extends \Codeception\Module implements DependsOnModule
     /**
      * @param int $timeout
      */
-    public function waitForAjax($timeout = 60)
+    public function waitForAjax(int $timeout = 60)
     {
         $this->webDriver->waitForJS('return !!window.jQuery && window.jQuery.active == 0;', $timeout);
         $this->webDriver->wait(1);
     }
 
-
     /**
      * @param int $timeout
      */
-    public function waitForPageLoad($timeout = 60)
+    public function waitForPageLoad(int $timeout = 60)
     {
         $this->webDriver->waitForJs('return document.readyState == "complete"', $timeout);
         $this->waitForAjax($timeout);
+    }
+
+    /**
+     * Activates modules
+     */
+    private function activateModules()
+    {
+        $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
+        $modulesToActivate = $testConfig->getModulesToActivate();
+
+        if ($modulesToActivate) {
+            $serviceCaller = new \OxidEsales\TestingLibrary\ServiceCaller();
+            $serviceCaller->setParameter('modulestoactivate', $modulesToActivate);
+            $serviceCaller->callService('ModuleInstaller', 1);
+        }
     }
 }
