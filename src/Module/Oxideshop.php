@@ -118,4 +118,12 @@ class Oxideshop extends \Codeception\Module implements DependsOnModule
             $serviceCaller->callService('ModuleInstaller', 1);
         }
     }
+    
+    /**
+     * Check if element exists on currently loaded page
+     */
+    public function seePageHasElement($element)
+    {
+        return count($this->getModule('WebDriver')->_findElements($element)) > 0;
+    }
 }
