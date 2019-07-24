@@ -1,6 +1,6 @@
-# Codeception Oxideshop Module
+# Codeception OXID eShop Module
 
-Codeception helper module for OXID eShop
+Codeception helper modules for OXID eShop
 
 ## Installation
   
@@ -12,8 +12,9 @@ composer require --dev oxid-esales/codeception-module
 
 ## Usage
   
-You can use this module as any other codeception module, by adding to 
-the ``enabled`` modules section in your codeception suite configurations.
+You can use modules from this package as any other codeception module, 
+by adding them to the ``enabled`` modules section in your codeception 
+suite configurations.
   
 **Example:**
   
@@ -29,7 +30,8 @@ modules:
       paths: 'Application/views/flow'
 ```
 
-After adding to the suite configuration, rebuild the codeception configuration with:
+After adding to the suite configuration, rebuild the codeception 
+configuration by running the command:
 
 ```
 codecept build
