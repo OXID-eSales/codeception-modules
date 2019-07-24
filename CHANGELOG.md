@@ -1,4 +1,4 @@
-# Change Log for Codeception OXID eShop Module
+# Change Log for OXID eShop Codeception Modules
 
 All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)

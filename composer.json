@@ -1,6 +1,6 @@
 {
-  "name": "oxid-esales/codeception-module",
-  "description": "Codeception helper module for OXID eShop",
+  "name": "oxid-esales/codeception-modules",
+  "description": "Codeception helper modules for OXID eShop",
   "keywords": [
     "oxid",
     "codeception",

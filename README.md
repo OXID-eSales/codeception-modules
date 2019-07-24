@@ -1,4 +1,4 @@
-# Codeception OXID eShop Module
+# OXID eShop Codeception Modules
 
 Codeception helper modules for OXID eShop
 
