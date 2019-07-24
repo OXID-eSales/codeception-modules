@@ -7,7 +7,7 @@ Codeception helper modules for OXID eShop
 This component is installable via composer:
 
 ```
-composer require --dev oxid-esales/codeception-module
+composer require --dev oxid-esales/codeception-modules
 ```
 
 ## Usage
