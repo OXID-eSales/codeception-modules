@@ -1,35 +1,42 @@
-# codeception-oxideshop-module
+# Codeception Oxideshop Module
+
 Codeception helper module for OXID eShop
 
-##Installation
+## Installation
   
-  You need to add the repository into your composer.json file
+This component is installable via composer:
 
 ```
-  composer require --dev oxid-esales/codeception-module
+composer require --dev oxid-esales/codeception-module
 ```
 
-##Modules
+## Usage
   
-  You can use module(s) as any other codeception module, by adding to the enabled modules in 
-  your codeception suite configurations.
+You can use this module as any other codeception module, by adding to 
+the ``enabled`` modules section in your codeception suite configurations.
   
-###Database module
+**Example:**
   
-```yml
-  modules:
-      enabled:
-          - \OxidEsales\Codeception\Module\Oxideshop
-          - \OxidEsales\Codeception\Module\Database:
-            depends: Db
-            config_key: XXXXXXXXX
-          - \OxidEsales\Codeception\Module\Translation\TranslationsModule:
-            shop_path: '%SHOP_SOURCE_PATH%'
-            paths: 'Application/views/flow'
 ```
-  
-  Update codeception build
+modules:
+  enabled:
+    - \OxidEsales\Codeception\Module\Oxideshop
+    - \OxidEsales\Codeception\Module\Database:
+      depends: Db
+      config_key: XXXXXXXXX
+    - \OxidEsales\Codeception\Module\Translation\TranslationsModule:
+      shop_path: '%SHOP_SOURCE_PATH%'
+      paths: 'Application/views/flow'
+```
+
+After adding to the suite configuration, rebuild the codeception configuration with:
 
 ```
-  codecept build
+codecept build
 ```
+
+## Bugs and issues
+
+If you experience any bugs or issues, please report them in 
+the [Testing library](https://github.com/OXID-eSales/testing_library) 
+Issues section.
