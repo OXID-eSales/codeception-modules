@@ -1,0 +1,18 @@
+params:
+  - {{baseDir}}/{{configDir}}/params.php
+paths:
+  tests: {{baseDir}}
+  output: {{baseDir}}/{{outputDir}}
+  data: {{baseDir}}/{{dataDir}}
+  support: {{baseDir}}/{{supportDir}}
+  envs: {{baseDir}}/_envs
+  actor_suffix: Tester
+
+settings:
+  colors: true
+  log: true
+  bootstrap: _bootstrap.php
+
+extensions:
+  enabled:
+    - Codeception\Extension\RunFailed
