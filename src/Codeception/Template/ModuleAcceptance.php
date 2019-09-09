@@ -14,8 +14,6 @@ class ModuleAcceptance extends InitTemplate
     const DIRECTORY_GENERATED = '_support' . DIRECTORY_SEPARATOR . '_generated';
     const DIRECTORY_ACCEPTANCE = 'Acceptance';
     const DIRECTORY_CONFIG = 'Config';
-    const DIRECTORY_PAGE_OBJECTS = 'Page';
-    const DIRECTORY_MODULES = 'Module';
 
     protected $configTemplate = "codeception.yml";
     protected $acceptanceConfigTemplate = "acceptance.suite.yml";
@@ -155,8 +153,6 @@ class ModuleAcceptance extends InitTemplate
             self::DIRECTORY_GENERATED,
             self::DIRECTORY_ACCEPTANCE,
             self::DIRECTORY_CONFIG,
-            self::DIRECTORY_MODULES,
-            self::DIRECTORY_PAGE_OBJECTS
         ];
 
         foreach ($structureDirectories as $directoryToCreate) {
