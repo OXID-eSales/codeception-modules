@@ -15,7 +15,7 @@ class TranslationsModule extends \Codeception\Module
     /**
      * @var array
      */
-    private $paths = ['Application/translations'];
+    private $paths = ['Application/translations', 'Application/views/admin'];
 
     /**
      * @var array
