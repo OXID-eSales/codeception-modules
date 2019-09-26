@@ -100,8 +100,16 @@ class Oxideshop extends \Codeception\Module implements DependsOnModule
      */
     public function waitForPageLoad(int $timeout = 60)
     {
-        $this->webDriver->waitForJs('return document.readyState == "complete"', $timeout);
+        $this->waitForDocumentReadyState($timeout);
         $this->waitForAjax($timeout);
+    }
+
+    /**
+     * @param int $timeout
+     */
+    public function waitForDocumentReadyState(int $timeout = 60)
+    {
+        $this->webDriver->waitForJs('return document.readyState == "complete"', $timeout);
     }
 
     /**
