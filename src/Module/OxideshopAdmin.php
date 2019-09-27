@@ -77,6 +77,23 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
     /**
      * Select Edit frame in Admin panel to be active now
      */
+    public function selectHeaderFrame()
+    {
+        $this->selectFrameInAdmin(self::FRAME_HEADER);
+    }
+
+
+    /**
+     * Select Edit frame in Admin panel to be active now
+     */
+    public function selectBaseFrame()
+    {
+        $this->selectFrameInAdmin(self::FRAME_BASE);
+    }
+
+    /**
+     * Select Edit frame in Admin panel to be active now
+     */
     public function selectEditFrame()
     {
         $this->selectFrameInAdmin(self::FRAME_EDIT);
