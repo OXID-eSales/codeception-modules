@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Template for module tests initialization is added
+- OxideshopAdmin module with admin frames selection actions
+
+### Fix
+- Improved the waitForAjax method jQuery waiting condition to work with shortened and full jQuery calls
 
 ## [1.0.0] -  2019-07-26
 
