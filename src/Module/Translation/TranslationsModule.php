@@ -18,10 +18,22 @@ class TranslationsModule extends \Codeception\Module
     private $paths = ['Application/translations'];
 
     /**
+     * @var string
+     */
+    private $currentLocale = 'en';
+
+    /**
+     * @var array
+     */
+    private $fileNamePatterns = ['*lang.php', '*option.php'];
+
+    /**
      * @var array
      */
     protected $config = [
         'paths' => null,
+        'locale' => null,
+        'file_name_patterns' => null,
     ];
 
     /**
@@ -36,13 +48,17 @@ class TranslationsModule extends \Codeception\Module
     {
         parent::_initialize();
 
-        Translator::initialize($this->getLanguageDirectoryPaths());
+        Translator::initialize(
+            $this->getCurrentLocale(),
+            $this->getLanguageDirectoryPaths(),
+            $this->getFileNamePatterns()
+        );
     }
 
     /**
      * @return array
      */
-    private function getLanguageDirectoryPaths()
+    private function getLanguageDirectoryPaths(): array
     {
         $fullPaths = [];
         if ($this->config['paths']) {
@@ -53,5 +69,27 @@ class TranslationsModule extends \Codeception\Module
             $fullPaths[] = $this->config['shop_path'].'/'.trim($path, '/').'/';
         }
         return $fullPaths;
+    }
+
+    /**
+     * @return string
+     */
+    private function getCurrentLocale(): string
+    {
+        if (isset($this->config['locale'])) {
+            return $this->config['locale'];
+        }
+        return $this->currentLocale;
+    }
+
+    /**
+     * @return array
+     */
+    private function getFileNamePatterns(): array
+    {
+        if (isset($this->config['file_name_patterns'])) {
+            $this->fileNamePatterns = explode(',', $this->config['file_name_patterns']);
+        }
+        return $this->fileNamePatterns;
     }
 }

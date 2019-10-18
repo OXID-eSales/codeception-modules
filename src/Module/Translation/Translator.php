@@ -20,21 +20,18 @@ class Translator implements TranslatorInterface
     private static $sfTranslator;
 
     /**
-     * @param array $paths
+     * @param string $locale
+     * @param array  $paths
+     * @param array  $fileNamePatterns
      */
-    public static function initialize(array $paths)
+    public static function initialize(string $locale, array $paths, array $fileNamePatterns)
     {
-        self::$sfTranslator = new SymfonyTranslator('en');
+        self::$sfTranslator = new SymfonyTranslator($locale);
+        self::$sfTranslator->setFallbackLocales(['en', 'de']);
+        self::$sfTranslator->addLoader('oxphp', new LanguageDirectoryReader($fileNamePatterns));
 
-        self::$sfTranslator->addLoader('oxphp', new LanguageDirectoryReader());
-
-        $languageDir = self::getLanguageDirectories($paths, 'de');
-
-        self::$sfTranslator->addResource('oxphp', $languageDir, 'de');
-
-        $languageDir = self::getLanguageDirectories($paths, 'en');
-
-        self::$sfTranslator->addResource('oxphp', $languageDir, 'en');
+        $languageDirectory = self::getLanguageDirectories($paths, $locale);
+        self::$sfTranslator->addResource('oxphp', $languageDirectory, $locale);
     }
 
     /**

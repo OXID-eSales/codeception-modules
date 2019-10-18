@@ -19,6 +19,21 @@ use Symfony\Component\Translation\Loader\ArrayLoader;
 class LanguageDirectoryReader extends ArrayLoader
 {
     /**
+     * @var array
+     */
+    private $fileNamePatterns;
+
+    /**
+     * LanguageDirectoryReader constructor.
+     *
+     * @param array $fileNamePatterns An array of file name patterns to search (default '*lang.php', '*option.php').
+     */
+    public function __construct(array $fileNamePatterns)
+    {
+        $this->fileNamePatterns = $fileNamePatterns;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function load($resource, $locale, $domain = 'messages')
@@ -46,7 +61,7 @@ class LanguageDirectoryReader extends ArrayLoader
      *
      * @return array
      */
-    private function loadFile(string $file)
+    private function loadFile(string $file): array
     {
         $aLang = [];
         require $file;
@@ -59,10 +74,9 @@ class LanguageDirectoryReader extends ArrayLoader
      *
      * @return array
      */
-    private function loadDirectory(array $messages, string $directory)
+    private function loadDirectory(array $messages, string $directory): array
     {
-        $finder = new Finder();
-        $finder->files()->in($directory)->name('*lang.php');
+        $finder = $this->findFiles($directory);
 
         foreach ($finder as $file) {
             $lang = $this->loadFile($file);
@@ -74,5 +88,30 @@ class LanguageDirectoryReader extends ArrayLoader
             $messages = array_merge($messages, $lang);
         }
         return $messages;
+    }
+
+    /**
+     * @param string $directory
+     *
+     * @return Finder
+     */
+    private function findFiles(string $directory): Finder
+    {
+        $finder = new Finder();
+        $finder = $finder->files()->in($directory);
+
+        foreach ($this->getFileExtensionPattern() as $pattern) {
+            $finder->name($pattern);
+        }
+
+        return $finder;
+    }
+
+    /**
+     * @return array
+     */
+    private function getFileExtensionPattern(): array
+    {
+        return $this->fileNamePatterns;
     }
 }
