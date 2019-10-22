@@ -14,7 +14,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Exception\ModuleSe
  * Class Oxideshop
  * @package OxidEsales\Codeception\Module
  */
-class OxidModules extends \Codeception\Module
+class OxideshopModules extends \Codeception\Module
 {
     /**
      * Reset context and activate modules before test
