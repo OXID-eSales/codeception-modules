@@ -25,7 +25,7 @@ class TranslationsModule extends \Codeception\Module
     /**
      * @var array
      */
-    private $fileNamePatterns = ['*lang.php', '*option.php'];
+    private $fileNamePatterns = ['*lang.php', '*options.php'];
 
     /**
      * @var array

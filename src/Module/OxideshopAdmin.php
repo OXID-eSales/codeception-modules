@@ -75,7 +75,7 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
     }
 
     /**
-     * Select Edit frame in Admin panel to be active now
+     * Select Header frame in Admin panel to be active now
      */
     public function selectHeaderFrame()
     {
@@ -84,7 +84,7 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
 
 
     /**
-     * Select Edit frame in Admin panel to be active now
+     * Select Base frame in Admin panel to be active now
      */
     public function selectBaseFrame()
     {
