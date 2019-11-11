@@ -1,4 +1,8 @@
-<?php
+<?php declare(strict_types=1);
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
 
 namespace {{namespace}}\Acceptance;
 
@@ -6,7 +10,7 @@ use OxidEsales\Codeception\Page\Home;
 use OxidEsales\Codeception\Module\Translation\Translator;
 use {{namespace}}\AcceptanceTester;
 
-class ExampleCest
+final class ExampleCest
 {
     public function _before(AcceptanceTester $I)
     {
