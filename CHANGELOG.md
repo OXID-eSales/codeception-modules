@@ -4,13 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.2.0] - Unreleased
+## [2.0.0] -  Unreleased
 
-### Added
-- Use declare(strict_types=1); in template files
-
-### Fix
-- Fix bootstrap's template configuration with ^3.1 codeception version
+### Removed
+- Removed database encoding:
+    - config_key from ``src/Codeception/Template/ModuleAcceptance/acceptance.suite.yml``
+    - protected requiredFields in ``src/Module/Database.php``
 
 ## [1.1.0] -  2019-11-07
 

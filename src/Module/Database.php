@@ -16,11 +16,6 @@ use Codeception\Module\Db;
 class Database extends \Codeception\Module implements DependsOnModule
 {
     /**
-     * @var array
-     */
-    protected $requiredFields = ['config_key'];
-
-    /**
      * @var Db
      */
     private $db;
@@ -65,23 +60,20 @@ class Database extends \Codeception\Module implements DependsOnModule
         /** @var \Codeception\Module\Db $dbModule */
         $record = $this->db->grabNumRecords('oxconfig', ['oxvarname' => $name]);
         $dbh = $this->db->_getDbh();
-        $configKey = $this->config['config_key'];
         if ($record > 0) {
-            $query = "update oxconfig set oxvarvalue=ENCODE( :value, :config) where oxvarname=:name";
+            $query = "update oxconfig set oxvarvalue= :value where oxvarname=:name";
             $parameters = [
                 'name' => $name,
                 'value' => $value,
-                'config' => $configKey
             ];
         } else {
             $query = "insert into oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue)
-                       values(:oxid, 1, :name, :type, ENCODE( :value, :config))";
+                       values(:oxid, 1, :name, :type, :value)";
             $parameters = [
                 'oxid' => md5($name.$type),
                 'name' => $name,
                 'type' => $type,
                 'value' => $value,
-                'config' => $configKey
             ];
         }
         $sth = $dbh->prepare($query);
