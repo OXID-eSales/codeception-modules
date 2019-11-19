@@ -24,7 +24,6 @@ modules:
     - \OxidEsales\Codeception\Module\Oxideshop
     - \OxidEsales\Codeception\Module\Database:
       depends: Db
-      config_key: XXXXXXXXX
     - \OxidEsales\Codeception\Module\Translation\TranslationsModule:
       shop_path: '%SHOP_SOURCE_PATH%'
       paths: 'Application/views/flow'
