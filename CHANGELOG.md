@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fix
 - Fix bootstrap's template configuration with ^3.1 codeception version
 
+### Removed
+- Removed database encoding:
+    - config_key from ``src/Codeception/Template/ModuleAcceptance/acceptance.suite.yml``
+    - protected requiredFields in ``src/Module/Database.php``
+
 ## [1.1.0] -  2019-11-07
 
 ### Added
