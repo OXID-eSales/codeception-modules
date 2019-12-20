@@ -29,6 +29,11 @@ class Oxideshop extends \Codeception\Module implements DependsOnModule
     private $db;
 
     /**
+     * @var array
+     */
+    protected $config = ['screen_shot_url' => ''];
+
+    /**
      * @return array
      */
     public function _depends()
@@ -126,7 +131,21 @@ class Oxideshop extends \Codeception\Module implements DependsOnModule
             $serviceCaller->callService('ModuleInstaller', 1);
         }
     }
-    
+
+    /**
+     * @param \Codeception\TestInterface $test
+     * @param $fail
+     */
+    public function _failed(\Codeception\TestInterface $test, $fail)
+    {
+        $report = $test->getMetadata()->getReports();
+        if (isset($report['png']) && $this->config['screen_shot_url']) {
+            $fileName = basename($report['png']);
+            $fullUrl = rtrim($this->config['screen_shot_url'],'/') . '/' . $fileName;
+            $test->getMetadata()->addReport('png', $fullUrl);
+        }
+    }
+
     /**
      * Check if element exists on currently loaded page
      */
