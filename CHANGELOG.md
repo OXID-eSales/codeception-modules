@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Use declare(strict_types=1); in template files
+- Screen shot url for failing tests
 
 ### Fix
 - Fix bootstrap's template configuration with ^3.1 codeception version

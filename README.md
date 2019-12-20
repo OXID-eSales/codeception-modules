@@ -21,7 +21,11 @@ suite configurations.
 ```
 modules:
   enabled:
-    - \OxidEsales\Codeception\Module\Oxideshop
+    - \OxidEsales\Codeception\Module\Oxideshop:
+      screen_shot_url: '%SCREEN_SHOT_URL%'
+      depends:
+        - WebDriver
+        - Db
     - \OxidEsales\Codeception\Module\Database:
       depends: Db
       config_key: XXXXXXXXX
