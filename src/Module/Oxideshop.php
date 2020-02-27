@@ -7,7 +7,7 @@
 
 namespace OxidEsales\Codeception\Module;
 
-require_once __DIR__ . '/../../../../oxid-esales/testing-library/base.php';
+#require_once __DIR__ . '/../../../../../tests/bootstrap.php';
 
 use Codeception\Exception\ElementNotFound;
 use Codeception\Lib\Interfaces\DependsOnModule;
@@ -17,6 +17,7 @@ use Codeception\Module\WebDriver;
 use Facebook\WebDriver\Exception\ElementNotVisibleException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use OxidEsales\Facts\Facts;
+use Webmozart\PathUtil\Path;
 
 class Oxideshop extends Module implements DependsOnModule
 {

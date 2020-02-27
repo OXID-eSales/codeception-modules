@@ -6,7 +6,7 @@
 
 namespace OxidEsales\Codeception\Module;
 
-require_once __DIR__.'/../../../../oxid-esales/testing-library/base.php';
+#require_once __DIR__.'/../../../../oxid-esales/testing-library/base.php';
 
 use Codeception\Lib\ModuleContainer;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Exception\ModuleSetupException;
@@ -47,6 +47,8 @@ class OxideshopModules extends \Codeception\Module
      */
     private function activateModules()
     {
+        // TODO: Create new mechanism for loading modules
+        /**
         $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
         $modulesToActivate = $testConfig->getModulesToActivate();
 
@@ -60,6 +62,7 @@ class OxideshopModules extends \Codeception\Module
                 // we can ignore this
             }
         }
+         */
     }
 
     public function getShopModulePath(string $modulePath): string
