@@ -124,16 +124,38 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
     {
         $desiredParent = $this->frameParents[$desiredFrame] ?? '';
 
-        $this->webdriver->switchToIFrame();
+        $this->switchToFrame();
 
         if ($desiredParent) {
             $this->webdriver->waitForElement("#{$desiredParent}", 5);
-            $this->webdriver->switchToIFrame($desiredParent);
+            $this->switchToFrame($desiredParent);
             $this->oxideshop->waitForDocumentReadyState();
         }
 
         $this->webdriver->waitForElement("#{$desiredFrame}", 5);
-        $this->webdriver->switchToIFrame($desiredFrame);
+        $this->switchToFrame($desiredFrame);
         $this->oxideshop->waitForDocumentReadyState();
+    }
+
+    /**
+     * Switch to frame
+     *
+     * Method is temporary untill webdriver will provide working solution for switching the frames
+     *
+     * @param $elementId
+     */
+    private function switchToFrame($elementId = null)
+    {
+        if (is_null($elementId)) {
+            $this->webdriver->webDriver->switchTo()->defaultContent();
+            return;
+        }
+
+        $els = $this->webdriver->_findElements("frame[id='{$elementId}']");
+        if (!count($els)) {
+            throw new ElementNotFound($selector, "Frame was not found by CSS or XPath");
+        }
+
+        $this->webdriver->webDriver->switchTo()->frame($els[0]);
     }
 }
