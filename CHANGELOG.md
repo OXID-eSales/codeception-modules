@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.0.0] -  Unreleased
 
+### Added
+- Added `codeception/module-filesystem` in `composer.json` file
+
 ### Removed
 - Removed database encoding:
     - config_key from ``src/Codeception/Template/ModuleAcceptance/acceptance.suite.yml``
