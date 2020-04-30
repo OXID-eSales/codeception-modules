@@ -10,6 +10,11 @@ This component is installable via composer:
 composer require --dev oxid-esales/codeception-modules
 ```
 
+## Requirements
+
+* master branch is compatible with OXID eShop compilation master
+* b-1.x branch is compatible with OXID eShop compilation 6.x (>=6.2.x)
+
 ## Usage
   
 You can use modules from this package as any other codeception module, 
@@ -32,6 +37,8 @@ modules:
     - \OxidEsales\Codeception\Module\Translation\TranslationsModule:
       shop_path: '%SHOP_SOURCE_PATH%'
       paths: 'Application/views/flow'
+    - \OxidEsales\Codeception\Module\FlowTheme:
+        depends: \OxidEsales\Codeception\Module\Database
 ```
 
 After adding to the suite configuration, rebuild the codeception 
