@@ -55,13 +55,19 @@ class Oxideshop extends Module implements DependsOnModule
     }
 
     /**
-     * Reset context and activate modules before test
+     * Activate modules before testsuite
+     */
+    public function _beforeSuite($settings = [])
+    {
+        $this->activateModules();
+    }
+
+    /**
+     * Reset context
      */
     public function _before(\Codeception\TestInterface $test)
     {
         \OxidEsales\Codeception\Module\Context::resetActiveUser();
-        // Activate modules
-        $this->activateModules();
     }
 
     /**
@@ -120,6 +126,7 @@ class Oxideshop extends Module implements DependsOnModule
 
     /**
      * Activates modules
+     * @deprecated since v1.2.0(2020-07-02); Will be moved to oxideshopmodules
      */
     private function activateModules()
     {

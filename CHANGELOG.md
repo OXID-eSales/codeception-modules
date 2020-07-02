@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Methods:
     - `Module\Oxideshop::seeAndClick`
 
+### Deprecated
+- Activate modules within oxideshop
+
 ## [1.2.0] - 2020-01-02
 
 ### Added
