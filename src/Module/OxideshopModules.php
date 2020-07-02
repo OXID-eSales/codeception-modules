@@ -19,21 +19,6 @@ use OxidEsales\Facts\Facts;
  */
 class OxideshopModules extends \Codeception\Module implements ConflictsWithModule
 {
-    /** @var string */
-    private $shopRootPath;
-
-    public function __construct(ModuleContainer $moduleContainer, $config = null)
-    {
-        $this->shopRootPath = (new Facts())->getShopRootPath();
-
-        parent::__construct($moduleContainer, $config);
-    }
-
-    public function _conflicts()
-    {
-        return 'OxidEsales\Codeception\Module\Oxideshop';
-    }
-
     /**
      * Reset context and activate modules before test
      */

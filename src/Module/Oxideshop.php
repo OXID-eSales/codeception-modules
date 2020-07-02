@@ -55,14 +55,6 @@ class Oxideshop extends Module implements DependsOnModule
     }
 
     /**
-     * Activate modules before testsuite
-     */
-    public function _beforeSuite($settings = [])
-    {
-        $this->activateModules();
-    }
-
-    /**
      * Reset context
      */
     public function _before(\Codeception\TestInterface $test)
@@ -122,22 +114,6 @@ class Oxideshop extends Module implements DependsOnModule
     public function waitForDocumentReadyState(int $timeout = 60)
     {
         $this->webDriver->waitForJs('return document.readyState == "complete"', $timeout);
-    }
-
-    /**
-     * Activates modules
-     * @deprecated since v1.2.0(2020-07-02); Will be moved to oxideshopmodules
-     */
-    private function activateModules()
-    {
-        $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
-        $modulesToActivate = $testConfig->getModulesToActivate();
-
-        if ($modulesToActivate) {
-            $serviceCaller = new \OxidEsales\TestingLibrary\ServiceCaller();
-            $serviceCaller->setParameter('modulestoactivate', $modulesToActivate);
-            $serviceCaller->callService('ModuleInstaller', 1);
-        }
     }
 
     /**
