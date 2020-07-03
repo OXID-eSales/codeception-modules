@@ -9,7 +9,9 @@ namespace OxidEsales\Codeception\Module;
 require_once __DIR__.'/../../../../oxid-esales/testing-library/base.php';
 
 use Codeception\Lib\Interfaces\ConflictsWithModule;
+use Codeception\Lib\ModuleContainer;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Exception\ModuleSetupException;
+use OxidEsales\Facts\Facts;
 
 /**
  * Class Oxideshop
@@ -17,6 +19,15 @@ use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Exception\ModuleSe
  */
 class OxideshopModules extends \Codeception\Module implements ConflictsWithModule
 {
+    /** @var string */
+    private $shopRootPath;
+
+    public function __construct(ModuleContainer $moduleContainer, $config = null)
+    {
+        $this->shopRootPath = (new Facts())->getShopRootPath();
+
+        parent::__construct($moduleContainer, $config);
+    }
 
     public function _conflicts()
     {
@@ -49,5 +60,45 @@ class OxideshopModules extends \Codeception\Module implements ConflictsWithModul
                 // we can ignore this
             }
         }
+    }
+
+    public function getShopModulePath(string $modulePath): string
+    {
+        return $this->shopRootPath . '/source/modules' . substr($modulePath, strrpos($modulePath, '/'));
+    }
+
+    public function installModule($modulePath)
+    {
+        //first Copy
+        exec('cp ' . $modulePath . ' ' . $this->shopRootPath . '/source/modules/ -R');
+        //now activate
+        exec(
+            $this->shopRootPath .
+            '/bin/oe-console oe:module:install-configuration ' .
+            $this->getShopModulePath($modulePath)
+        );
+    }
+
+    public function uninstallModule($modulePath, $moduleId)
+    {
+        exec(
+            $this->shopRootPath .
+            '/bin/oe-console oe:module:remove-configuration ' .
+            $moduleId
+        );
+        $path = $this->getShopModulePath($modulePath);
+        if (file_exists($path) && is_dir($path)) {
+            exec('rm ' . $path . ' -R');
+        }
+    }
+
+    public function activateModule($moduleId)
+    {
+        exec($this->shopRootPath . '/bin/oe-console oe:module:activate ' . $moduleId);
+    }
+
+    public function deactivateModule($moduleId)
+    {
+        exec($this->shopRootPath . '/bin/oe-console oe:module:deactivate ' . $moduleId);
     }
 }
