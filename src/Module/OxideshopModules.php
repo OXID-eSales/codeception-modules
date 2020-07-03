@@ -9,6 +9,7 @@ namespace OxidEsales\Codeception\Module;
 require_once __DIR__.'/../../../../oxid-esales/testing-library/base.php';
 
 use Codeception\Lib\Interfaces\ConflictsWithModule;
+use Codeception\Lib\ModuleContainer;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Exception\ModuleSetupException;
 use OxidEsales\Facts\Facts;
 
@@ -18,6 +19,15 @@ use OxidEsales\Facts\Facts;
  */
 class OxideshopModules extends \Codeception\Module implements ConflictsWithModule
 {
+    /** @var string */
+    private $shopRootPath;
+
+    public function __construct(ModuleContainer $moduleContainer, $config = null)
+    {
+        $this->shopRootPath = (new Facts())->getShopRootPath();
+
+        parent::__construct($moduleContainer, $config);
+    }
 
     public function _conflicts()
     {
@@ -52,29 +62,18 @@ class OxideshopModules extends \Codeception\Module implements ConflictsWithModul
         }
     }
 
-    private $shopRootPath = null;
-    
-    private function shopRootPath()
-    {
-        if (!$this->shopRootPath) {
-            $this->shopRootPath = (new Facts())->getShopRootPath();
-        }
-
-        return $this->shopRootPath;
-    }
-    
     public function getShopModulePath(string $modulePath): string
     {
-        return $this->shopRootPath() . '/source/modules' . substr($modulePath, strrpos($modulePath, '/'));
+        return $this->shopRootPath . '/source/modules' . substr($modulePath, strrpos($modulePath, '/'));
     }
 
     public function installModule($modulePath)
     {
         //first Copy
-        exec('cp ' . $modulePath . ' ' . $this->shopRootPath() . '/source/modules/ -R');
+        exec('cp ' . $modulePath . ' ' . $this->shopRootPath . '/source/modules/ -R');
         //now activate
         exec(
-            $this->shopRootPath() .
+            $this->shopRootPath .
             '/bin/oe-console oe:module:install-configuration ' .
             $this->getShopModulePath($modulePath)
         );
@@ -83,7 +82,7 @@ class OxideshopModules extends \Codeception\Module implements ConflictsWithModul
     public function uninstallModule($modulePath, $moduleId)
     {
         exec(
-            $this->shopRootPath() .
+            $this->shopRootPath .
             '/bin/oe-console oe:module:remove-configuration ' .
             $moduleId
         );
@@ -95,11 +94,11 @@ class OxideshopModules extends \Codeception\Module implements ConflictsWithModul
 
     public function activateModule($moduleId)
     {
-        exec($this->shopRootPath() . '/bin/oe-console oe:module:activate ' . $moduleId);
+        exec($this->shopRootPath . '/bin/oe-console oe:module:activate ' . $moduleId);
     }
 
     public function deactivateModule($moduleId)
     {
-        exec($this->shopRootPath() . '/bin/oe-console oe:module:deactivate ' . $moduleId);
+        exec($this->shopRootPath . '/bin/oe-console oe:module:deactivate ' . $moduleId);
     }
 }
