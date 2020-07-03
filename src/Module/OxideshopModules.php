@@ -8,8 +8,6 @@ namespace OxidEsales\Codeception\Module;
 
 require_once __DIR__.'/../../../../oxid-esales/testing-library/base.php';
 
-use Codeception\Lib\Interfaces\ConflictsWithModule;
-use Codeception\Lib\ModuleContainer;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Exception\ModuleSetupException;
 use OxidEsales\Facts\Facts;
 
@@ -17,7 +15,7 @@ use OxidEsales\Facts\Facts;
  * Class Oxideshop
  * @package OxidEsales\Codeception\Module
  */
-class OxideshopModules extends \Codeception\Module implements ConflictsWithModule
+class OxideshopModules extends \Codeception\Module
 {
     /**
      * Reset context and activate modules before test
