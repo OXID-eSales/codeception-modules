@@ -21,6 +21,7 @@ modules:
         cleanup: true # run populator before each test
         populator: '%PHP_BIN% %VENDOR_PATH%/bin/reset-shop'
     - \OxidEsales\Codeception\Module\Oxideshop:
+        screen_shot_url: '%SCREEN_SHOT_URL%'
         depends:
           - WebDriver
           - Db

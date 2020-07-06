@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
@@ -6,17 +7,17 @@
 
 namespace OxidEsales\Codeception\Module;
 
-require_once __DIR__.'/../../../../oxid-esales/testing-library/base.php';
+require_once __DIR__ . '/../../../../oxid-esales/testing-library/base.php';
 
+use Codeception\Exception\ElementNotFound;
 use Codeception\Lib\Interfaces\DependsOnModule;
-use Codeception\Module\WebDriver;
+use Codeception\Module;
 use Codeception\Module\Db;
+use Codeception\Module\WebDriver;
+use Facebook\WebDriver\Exception\ElementNotVisibleException;
+use Facebook\WebDriver\Exception\NoSuchElementException;
 
-/**
- * Class Oxideshop
- * @package OxidEsales\Codeception\Module
- */
-class Oxideshop extends \Codeception\Module implements DependsOnModule
+class Oxideshop extends Module implements DependsOnModule
 {
     /**
      * @var WebDriver
@@ -27,6 +28,11 @@ class Oxideshop extends \Codeception\Module implements DependsOnModule
      * @var Db
      */
     private $db;
+
+    /**
+     * @var array
+     */
+    protected $config = ['screen_shot_url' => ''];
 
     /**
      * @return array
@@ -49,13 +55,11 @@ class Oxideshop extends \Codeception\Module implements DependsOnModule
     }
 
     /**
-     * Reset context and activate modules before test
+     * Reset context
      */
     public function _before(\Codeception\TestInterface $test)
     {
         \OxidEsales\Codeception\Module\Context::resetActiveUser();
-        // Activate modules
-        $this->activateModules();
     }
 
     /**
@@ -113,25 +117,45 @@ class Oxideshop extends \Codeception\Module implements DependsOnModule
     }
 
     /**
-     * Activates modules
+     * @param \Codeception\TestInterface $test
+     * @param $fail
      */
-    private function activateModules()
+    public function _failed(\Codeception\TestInterface $test, $fail)
     {
-        $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
-        $modulesToActivate = $testConfig->getModulesToActivate();
-
-        if ($modulesToActivate) {
-            $serviceCaller = new \OxidEsales\TestingLibrary\ServiceCaller();
-            $serviceCaller->setParameter('modulestoactivate', $modulesToActivate);
-            $serviceCaller->callService('ModuleInstaller', 1);
+        $report = $test->getMetadata()->getReports();
+        if (isset($report['png']) && $this->config['screen_shot_url']) {
+            $fileName = basename($report['png']);
+            $fullUrl = rtrim($this->config['screen_shot_url'],'/') . '/' . $fileName;
+            $test->getMetadata()->addReport('png', $fullUrl);
         }
     }
-    
+
     /**
      * Check if element exists on currently loaded page
      */
     public function seePageHasElement($element)
     {
         return count($this->getModule('WebDriver')->_findElements($element)) > 0;
+    }
+
+    /**
+     * Clicks on first visible element
+     * @param string $locator
+     * @throws ElementNotVisibleException
+     * @throws NoSuchElementException
+     */
+    public function seeAndClick(string $locator): void
+    {
+        $elements = $this->webDriver->_findElements($locator);
+        if (!$elements) {
+            throw new NoSuchElementException($locator);
+        }
+        foreach ($elements as $el) {
+            if ($el->isDisplayed()) {
+                $el->click();
+                return;
+            }
+        }
+        throw new ElementNotVisibleException($locator);
     }
 }
