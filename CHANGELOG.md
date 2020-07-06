@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     - config_key from ``src/Codeception/Template/ModuleAcceptance/acceptance.suite.yml``
     - protected requiredFields in ``src/Module/Database.php``
 
-## [1.3.0] - unreleased
+## [1.3.0] - 2020-07-06
 
 ### Added
 - Flow theme module
