@@ -59,7 +59,9 @@ class Oxideshop extends Module implements DependsOnModule
      */
     public function _beforeSuite($settings = [])
     {
-        $this->activateModules();
+        if (!$this->db->_getConfig('cleanup')) {
+            $this->activateModules();
+        }
     }
 
     /**
@@ -68,6 +70,9 @@ class Oxideshop extends Module implements DependsOnModule
     public function _before(\Codeception\TestInterface $test)
     {
         \OxidEsales\Codeception\Module\Context::resetActiveUser();
+        if ($this->db->_getConfig('cleanup')) {
+            $this->activateModules();
+        }
     }
 
     /**
