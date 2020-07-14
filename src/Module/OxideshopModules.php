@@ -66,7 +66,7 @@ class OxideshopModules extends \Codeception\Module
     {
         exec(
             $this->shopRootPath .
-            '/bin/oe-console oe:module:remove-configuration ' .
+            '/bin/oe-console oe:module:uninstall-configuration ' .
             $moduleId
         );
         $path = $this->getShopModulePath($modulePath);
