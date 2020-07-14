@@ -79,19 +79,6 @@ class OxideshopModules extends \Codeception\Module implements ConflictsWithModul
         );
     }
 
-    public function uninstallModule($modulePath, $moduleId)
-    {
-        exec(
-            $this->shopRootPath .
-            '/bin/oe-console oe:module:remove-configuration ' .
-            $moduleId
-        );
-        $path = $this->getShopModulePath($modulePath);
-        if (file_exists($path) && is_dir($path)) {
-            exec('rm ' . $path . ' -R');
-        }
-    }
-
     public function activateModule($moduleId)
     {
         exec($this->shopRootPath . '/bin/oe-console oe:module:activate ' . $moduleId);
