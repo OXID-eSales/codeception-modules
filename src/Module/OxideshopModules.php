@@ -22,9 +22,15 @@ class OxideshopModules extends \Codeception\Module implements ConflictsWithModul
     /** @var string */
     private $shopRootPath;
 
+    /**
+     * @var string
+     */
+    private $communityEditionRootPath;
+
     public function __construct(ModuleContainer $moduleContainer, $config = null)
     {
         $this->shopRootPath = (new Facts())->getShopRootPath();
+        $this->communityEditionRootPath = (new Facts())->getCommunityEditionRootPath();
 
         parent::__construct($moduleContainer, $config);
     }
@@ -73,7 +79,7 @@ class OxideshopModules extends \Codeception\Module implements ConflictsWithModul
         exec('cp ' . $modulePath . ' ' . $this->shopRootPath . '/source/modules/ -R');
         //now activate
         exec(
-            $this->shopRootPath .
+            $this->communityEditionRootPath .
             '/bin/oe-console oe:module:install-configuration ' .
             $this->getShopModulePath($modulePath)
         );
@@ -82,7 +88,7 @@ class OxideshopModules extends \Codeception\Module implements ConflictsWithModul
     public function uninstallModule($modulePath, $moduleId)
     {
         exec(
-            $this->shopRootPath .
+            $this->communityEditionRootPath .
             '/bin/oe-console oe:module:uninstall-configuration ' .
             $moduleId
         );
@@ -94,11 +100,11 @@ class OxideshopModules extends \Codeception\Module implements ConflictsWithModul
 
     public function activateModule($moduleId)
     {
-        exec($this->shopRootPath . '/bin/oe-console oe:module:activate ' . $moduleId);
+        exec($this->communityEditionRootPath . '/bin/oe-console oe:module:activate ' . $moduleId);
     }
 
     public function deactivateModule($moduleId)
     {
-        exec($this->shopRootPath . '/bin/oe-console oe:module:deactivate ' . $moduleId);
+        exec($this->communityEditionRootPath . '/bin/oe-console oe:module:deactivate ' . $moduleId);
     }
 }
