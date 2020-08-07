@@ -16,6 +16,7 @@ use Codeception\Module\Db;
 use Codeception\Module\WebDriver;
 use Facebook\WebDriver\Exception\ElementNotVisibleException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
+use OxidEsales\Facts\Facts;
 
 class Oxideshop extends Module implements DependsOnModule
 {
@@ -186,5 +187,11 @@ class Oxideshop extends Module implements DependsOnModule
             }
         }
         throw new ElementNotVisibleException($locator);
+    }
+
+    public function regenerateDatabaseViews(): void
+    {
+        $vendorPath = (new Facts())->getVendorPath();
+        exec($vendorPath. '/bin/oe-eshop-db_views_regenerate');
     }
 }
