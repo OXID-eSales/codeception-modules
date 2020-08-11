@@ -79,4 +79,32 @@ class Database extends \Codeception\Module implements DependsOnModule
         $sth = $dbh->prepare($query);
         $sth->execute($parameters);
     }
+
+    /**
+     * select a value from config table.
+     *
+     * @param string $name  The name of config parameter.
+     * @param int $shopId  The shopId of config parameter.
+     * @param string $module  The module of config parameter.
+     *
+     * @return mixed Returns array[value, type] or false
+     */
+    public function grabConfigValueFromDatabase(string $name, int $shopId, string $module = "")
+    {
+        $query = "select decode(oxvarvalue, :key) as value, oxvartype as type from oxconfig
+                   where oxvarname= :name and oxshopid= :shopId and oxmodule= :module";
+
+        $parameters = [
+            'shopId' => $shopId,
+            'name'   => $name,
+            'key'    => $this->config['config_key'],
+            'module' => $module
+        ];
+
+        $db = $this->db->_getDbh();
+        $queryResult = $db->prepare($query);
+        $queryResult->execute($parameters);
+
+        return $queryResult->fetch();
+    }
 }
