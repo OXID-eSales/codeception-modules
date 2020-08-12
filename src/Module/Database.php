@@ -91,13 +91,12 @@ class Database extends \Codeception\Module implements DependsOnModule
      */
     public function grabConfigValueFromDatabase(string $name, int $shopId, string $module = "")
     {
-        $query = "select decode(oxvarvalue, :key) as value, oxvartype as type from oxconfig
+        $query = "select oxvarvalue as value, oxvartype as type from oxconfig
                    where oxvarname= :name and oxshopid= :shopId and oxmodule= :module";
 
         $parameters = [
             'shopId' => $shopId,
             'name'   => $name,
-            'key'    => $this->config['config_key'],
             'module' => $module
         ];
 
