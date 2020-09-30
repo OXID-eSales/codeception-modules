@@ -49,33 +49,76 @@ class Database extends \Codeception\Module implements DependsOnModule
     }
 
     /**
+     * Alias for multishop config update
+     *
+     * @param string $name The name of config parameter.
+     * @param mixed $value The value of config parameter.
+     * @param string $type The type of config parameter.
+     * @param int[] $shopId List of the shop ids to update config
+     * @param string $module Id of the module config is responsible for. Like 'theme:flow' or 'module:oepaypal'
+     */
+    public function updateConfigInDatabaseForShops(
+        string $name,
+        $value,
+        string $type = 'bool',
+        array $shopIds = [1],
+        string $module = ''
+    ) {
+        foreach ($shopIds as $shopId) {
+            $this->updateConfigInDatabase($name, $value, $type, $shopId, $module);
+        }
+    }
+
+    /**
      * Update values in the config table.
      *
-     * @param string $name  The name of config parameter.
-     * @param mixed  $value The value of config parameter.
-     * @param string $type  The type of config parameter.
+     * @param string $name The name of config parameter.
+     * @param mixed $value The value of config parameter.
+     * @param string $type The type of config parameter.
+     * @param int $shopId Id of the shop
+     * @param string $module Id of the module config is responsible for. Like 'theme:flow' or 'module:oepaypal'
      */
-    public function updateConfigInDatabase(string $name, $value, string $type='bool')
-    {
+    public function updateConfigInDatabase(
+        string $name,
+        $value,
+        string $type = 'bool',
+        int $shopId = 1,
+        string $module = ''
+    ) {
         /** @var \Codeception\Module\Db $dbModule */
-        $record = $this->db->grabNumRecords('oxconfig', ['oxvarname' => $name]);
+        $recordsCount = $this->db->grabNumRecords(
+            'oxconfig',
+            [
+                'oxvarname' => $name,
+                'oxshopid' => $shopId,
+                'oxmodule' => $module
+            ]
+        );
+
         $dbh = $this->db->_getDbh();
-        if ($record > 0) {
-            $query = "update oxconfig set oxvarvalue= :value where oxvarname=:name";
-            $parameters = [
-                'name' => $name,
-                'value' => $value,
-            ];
+
+        $parameters = [
+            'name' => $name,
+            'value' => $value,
+            'type' => $type,
+            'shopId' => $shopId,
+            'module' => $module
+        ];
+
+        if ($recordsCount > 0) {
+            $query = "update oxconfig 
+                set oxvarvalue=:value,
+                    oxvartype=:type
+                where oxvarname=:name 
+                  and oxshopid=:shopId
+                  and oxmodule=:module";
+
         } else {
-            $query = "insert into oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue)
-                       values(:oxid, 1, :name, :type, :value)";
-            $parameters = [
-                'oxid' => md5($name.$type),
-                'name' => $name,
-                'type' => $type,
-                'value' => $value,
-            ];
+            $query = "insert into oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue, oxmodule)
+                       values(:oxid, :shopId, :name, :type, :value, :module)";
+            $parameters['oxid'] = md5($name . $type . $shopId . $module);
         }
+
         $sth = $dbh->prepare($query);
         $sth->execute($parameters);
     }
