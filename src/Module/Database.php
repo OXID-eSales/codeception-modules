@@ -114,7 +114,7 @@ class Database extends \Codeception\Module implements DependsOnModule
                   and oxshopid=:shopId";
 
         } else {
-            $query = "insert into oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue, oxmodule)
+            $query = "insert into oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue)
                        values(:oxid, :shopId, :name, :type, ENCODE( :value, :config))";
             $parameters['oxid'] = md5($name . $type . $shopId);
         }
