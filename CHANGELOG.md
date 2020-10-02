@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.4.0] - Unreleased
 
 ### Added
-- Add `shopId` and `module` parameter to `updateConfigInDatabase` method
+- Add `shopId` parameter to `updateConfigInDatabase` method
 - Add `updateConfigInDatabaseForShops` method as alias for multiple shop calls of `updateConfigInDatabase`
 - Method:
     - `OxidEsales\Codeception\Module\OxideshopModules::uninstallModule`

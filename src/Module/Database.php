@@ -60,17 +60,15 @@ class Database extends \Codeception\Module implements DependsOnModule
      * @param mixed $value The value of config parameter.
      * @param string $type The type of config parameter.
      * @param int[] $shopId List of the shop ids to update config
-     * @param string $module Id of the module config is responsible for. Like 'theme:flow' or 'module:oepaypal'
      */
     public function updateConfigInDatabaseForShops(
         string $name,
         $value,
         string $type = 'bool',
-        array $shopIds = [1],
-        string $module = ''
+        array $shopIds = [1]
     ) {
         foreach ($shopIds as $shopId) {
-            $this->updateConfigInDatabase($name, $value, $type, $shopId, $module);
+            $this->updateConfigInDatabase($name, $value, $type, $shopId);
         }
     }
 
@@ -81,22 +79,19 @@ class Database extends \Codeception\Module implements DependsOnModule
      * @param mixed $value The value of config parameter.
      * @param string $type The type of config parameter.
      * @param int $shopId Id of the shop
-     * @param string $module Id of the module config is responsible for. Like 'theme:flow' or 'module:oepaypal'
      */
     public function updateConfigInDatabase(
         string $name,
         $value,
         string $type = 'bool',
-        int $shopId = 1,
-        string $module = ''
+        int $shopId = 1
     ) {
         /** @var \Codeception\Module\Db $dbModule */
         $recordsCount = $this->db->grabNumRecords(
             'oxconfig',
             [
                 'oxvarname' => $name,
-                'oxshopid' => $shopId,
-                'oxmodule' => $module
+                'oxshopid' => $shopId
             ]
         );
 
@@ -108,8 +103,7 @@ class Database extends \Codeception\Module implements DependsOnModule
             'value' => $value,
             'type' => $type,
             'config' => $configKey,
-            'shopId' => $shopId,
-            'module' => $module
+            'shopId' => $shopId
         ];
 
         if ($recordsCount > 0) {
@@ -117,13 +111,12 @@ class Database extends \Codeception\Module implements DependsOnModule
                 set oxvarvalue=ENCODE( :value, :config),
                     oxvartype=:type
                 where oxvarname=:name 
-                  and oxshopid=:shopId
-                  and oxmodule=:module";
+                  and oxshopid=:shopId";
 
         } else {
             $query = "insert into oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue, oxmodule)
-                       values(:oxid, :shopId, :name, :type, ENCODE( :value, :config), :module)";
-            $parameters['oxid'] = md5($name . $type . $shopId . $module);
+                       values(:oxid, :shopId, :name, :type, ENCODE( :value, :config))";
+            $parameters['oxid'] = md5($name . $type . $shopId);
         }
 
         $sth = $dbh->prepare($query);
