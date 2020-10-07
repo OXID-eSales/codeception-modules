@@ -101,15 +101,13 @@ class Database extends \Codeception\Module implements DependsOnModule
         $parameters = [
             'name' => $name,
             'value' => $value,
-            'type' => $type,
             'config' => $configKey,
             'shopId' => $shopId
         ];
 
         if ($recordsCount > 0) {
             $query = "update oxconfig 
-                set oxvarvalue=ENCODE( :value, :config),
-                    oxvartype=:type
+                set oxvarvalue=ENCODE( :value, :config)
                 where oxvarname=:name 
                   and oxshopid=:shopId";
 
