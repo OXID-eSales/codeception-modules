@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Removed database encoding:
     - config_key from ``src/Codeception/Template/ModuleAcceptance/acceptance.suite.yml``
     - protected requiredFields in ``src/Module/Database.php``
+
+### Changed
+- Public method signatures in `Module\OxideshopModules`
     
 ## [1.5.0] - Unreleased
 ### Added
