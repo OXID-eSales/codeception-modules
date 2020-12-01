@@ -73,8 +73,10 @@ class OxideshopModules extends \Codeception\Module
     public function installModule($modulePath)
     {
         //first Copy
+        $this->debug('Copy ' . $modulePath . 'to shop root path');
         exec('cp ' . $modulePath . ' ' . $this->shopRootPath . '/source/modules/ -R');
         //now activate
+        $this->debug('Activate ' . $modulePath);
         exec(
             $this->communityEditionRootPath .
             '/bin/oe-console oe:module:install-configuration ' .
@@ -102,6 +104,7 @@ class OxideshopModules extends \Codeception\Module
 
     public function deactivateModule($moduleId)
     {
+        $this->debug('Deactivate ' . $moduleId);
         exec($this->communityEditionRootPath . '/bin/oe-console oe:module:deactivate ' . $moduleId);
     }
 }

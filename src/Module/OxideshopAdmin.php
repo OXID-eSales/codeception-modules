@@ -6,7 +6,7 @@
 
 namespace OxidEsales\Codeception\Module;
 
-require_once __DIR__.'/../../../../oxid-esales/testing-library/base.php';
+#require_once __DIR__ . '/../../../../../tests/bootstrap.php';
 
 use Codeception\Lib\Interfaces\DependsOnModule;
 

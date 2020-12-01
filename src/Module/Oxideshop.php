@@ -16,11 +16,13 @@ use Codeception\Module\Db;
 use Codeception\Module\WebDriver;
 use Facebook\WebDriver\Exception\ElementNotVisibleException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
+use OxidEsales\EshopCommunity\Tests\Utils\Traits\CachingTrait;
 use OxidEsales\Facts\Facts;
 use Webmozart\PathUtil\Path;
 
 class Oxideshop extends Module implements DependsOnModule
 {
+    use CachingTrait;
     /**
      * @var WebDriver
      */
@@ -62,6 +64,7 @@ class Oxideshop extends Module implements DependsOnModule
     public function _before(\Codeception\TestInterface $test)
     {
         \OxidEsales\Codeception\Module\Context::resetActiveUser();
+        $this->cleanupCaching();
     }
 
     /**

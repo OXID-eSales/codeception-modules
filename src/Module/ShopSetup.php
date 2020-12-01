@@ -7,66 +7,80 @@
 namespace OxidEsales\Codeception\Module;
 
 use Codeception\Module;
-use Codeception\TestInterface;
-use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use OxidEsales\EshopCommunity\Tests\TestUtils\Database\FixtureLoader;
-use OxidEsales\EshopCommunity\Tests\TestUtils\Database\TestDatabaseHandler;
-use OxidEsales\EshopCommunity\Tests\TestUtils\Traits\CachingTrait;
-use OxidEsales\EshopCommunity\Tests\TestUtils\Traits\ContainerTrait;
+use OxidEsales\EshopCommunity\Tests\Utils\Database\DatabaseDefaultsFileGenerator;
+use OxidEsales\EshopCommunity\Tests\Utils\Traits\DatabaseTrait;
+use OxidEsales\Facts\Facts;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+
 
 class ShopSetup extends Module
 {
-    use ContainerTrait;
-    use CachingTrait;
+    use DatabaseTrait;
 
-    public function _beforeSuite($settings = [])
+    /**
+     * @var array
+     */
+    protected $config = [
+        'shop_dump' => '',
+        'fixtures' => ''
+        ];
+
+    public function _beforeSuite($settings = array())
     {
-        parent::_beforeSuite($settings);
-        $this->cleanupCaching();
-        FixtureLoader::getInstance()->loadFixtures(
-            [Path::join(OX_TESTS_PATH, 'Codeception', '_data', 'db_fixture.yml')]);
-        $this->setupCodeceptionContainer();
+        $this->debug('Setup shop database');
+        $this->setupShopDatabase();
+
+        $this->debug('Add test fixtures');
+        $this->executeSqlQueryFromFile($this->config['fixtures']);
+
+        $this->createDump($this->getDumpFilePath());
     }
 
-    public function _before(TestInterface $test)
+    /**
+     * @param string $sqlFilePath
+     */
+    private function executeSqlQueryFromFile(string $sqlFilePath): void
     {
-        parent::_before($test);
-        /** @var ContextInterface $context */
-        $context = $this->get(ContextInterface::class);
-        $varDir = dirname($context->getConfigurationDirectoryPath());
-        if (file_exists($varDir))
-        {
-            if (file_exists($varDir . '.bak')) {
-                # Some error happend and the backup directory has not been reset
-                # so we probably should just clean up the var dir and hope for the best
-                $fileSystem = new Filesystem();
-                $fileSystem->remove($varDir);
-                return;
-            }
-            rename($varDir, $varDir . '.bak');
+        $fileSystem = new Filesystem();
+        if (!$fileSystem->exists($sqlFilePath)) {
+            $this->debug('No fixtures file found');
+            return;
         }
-    }
-
-    public function _after(TestInterface $test)
-    {
-        /** @var ContextInterface $context */
-        $context = $this->get(ContextInterface::class);
-        $varDir = dirname($context->getConfigurationDirectoryPath());
-        if (file_exists($varDir . '.bak')) {
-            if (file_exists($varDir)) {
-                $fileSystem = new Filesystem();
-                $fileSystem->remove($varDir);
-            }
-            rename($varDir . '.bak', $varDir);
+        $queries = file_get_contents($sqlFilePath);
+        if (!$queries) {
+            $this->debug('No fixtures found');
+            return;
         }
-        parent::_after($test);
+        $this->executeSqlQuery($queries);
     }
 
-    public function _afterSuite()
+    private function getDumpFilePath()
     {
-        TestDatabaseHandler::cleanupTestConfigInc();
-        parent::_afterSuite();
+        $shopDumpFile = $this->config['shop_dump'];
+        $pathDir = dirname($shopDumpFile);
+        $fileSystem = new Filesystem();
+        if (!$fileSystem->exists($pathDir)) {
+            $this->debug('Create dump directory');
+            $fileSystem->mkdir($pathDir);
+        }
+        return $shopDumpFile;
+    }
+
+    public function createDump($pathDump)
+    {
+        $this->debug('Create mysqldump file');
+        $facts = new Facts();
+        exec(
+            'mysqldump --defaults-file=' . $this->getMysqlConfigPath() .
+            ' --default-character-set=utf8 ' . $facts->getDatabaseName() . ' > '.$pathDump,
+            $output
+        );
+        $this->debug($output);
+    }
+
+    private function getMysqlConfigPath()
+    {
+        $generator = new DatabaseDefaultsFileGenerator(new \OxidEsales\Facts\Config\ConfigFile());
+        return $generator->generate();
     }
 }
