@@ -13,8 +13,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Removed database encoding:
     - config_key from ``src/Codeception/Template/ModuleAcceptance/acceptance.suite.yml``
     - protected requiredFields in ``src/Module/Database.php``
+    
+## [1.5.0] - Unreleased
+### Added
+- Support of codeception v4
 
-## [1.4.0] - Unreleased
+## [1.4.0] - 2020-11-10
 
 ### Added
 - Add `shopId` parameter to `updateConfigInDatabase` method
