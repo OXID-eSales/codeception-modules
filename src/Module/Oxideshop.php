@@ -7,8 +7,6 @@
 
 namespace OxidEsales\Codeception\Module;
 
-#require_once __DIR__ . '/../../../../../tests/bootstrap.php';
-
 use Codeception\Exception\ElementNotFound;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
@@ -16,7 +14,7 @@ use Codeception\Module\Db;
 use Codeception\Module\WebDriver;
 use Facebook\WebDriver\Exception\ElementNotVisibleException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
-use OxidEsales\EshopCommunity\Tests\Utils\Traits\CachingTrait;
+use OxidEsales\EshopCommunity\Tests\CachingTrait;
 use OxidEsales\Facts\Facts;
 use Webmozart\PathUtil\Path;
 

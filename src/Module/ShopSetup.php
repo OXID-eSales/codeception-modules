@@ -7,11 +7,9 @@
 namespace OxidEsales\Codeception\Module;
 
 use Codeception\Module;
-use OxidEsales\EshopCommunity\Tests\Utils\Database\DatabaseDefaultsFileGenerator;
-use OxidEsales\EshopCommunity\Tests\Utils\Traits\DatabaseTrait;
+use OxidEsales\Codeception\Module\Database\DatabaseTrait;
 use OxidEsales\Facts\Facts;
 use Symfony\Component\Filesystem\Filesystem;
-
 
 class ShopSetup extends Module
 {
@@ -64,23 +62,5 @@ class ShopSetup extends Module
             $fileSystem->mkdir($pathDir);
         }
         return $shopDumpFile;
-    }
-
-    public function createDump($pathDump)
-    {
-        $this->debug('Create mysqldump file');
-        $facts = new Facts();
-        exec(
-            'mysqldump --defaults-file=' . $this->getMysqlConfigPath() .
-            ' --default-character-set=utf8 ' . $facts->getDatabaseName() . ' > '.$pathDump,
-            $output
-        );
-        $this->debug($output);
-    }
-
-    private function getMysqlConfigPath()
-    {
-        $generator = new DatabaseDefaultsFileGenerator(new \OxidEsales\Facts\Config\ConfigFile());
-        return $generator->generate();
     }
 }

@@ -8,6 +8,7 @@ namespace OxidEsales\Codeception\Module;
 
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module\Db;
+use OxidEsales\Eshop\Core\DatabaseProvider;
 
 /**
  * Class Database
@@ -18,7 +19,7 @@ class Database extends \Codeception\Module implements DependsOnModule
     /**
      * @var Db
      */
-    private $db;
+    private $database;
 
     /**
      * @return array
@@ -29,11 +30,11 @@ class Database extends \Codeception\Module implements DependsOnModule
     }
 
     /**
-     * @param Db $db
+     * @param Db $database
      */
-    public function _inject(Db $db)
+    public function _inject(Db $database)
     {
-        $this->db = $db;
+        $this->database = $database;
     }
 
     /**
@@ -45,7 +46,7 @@ class Database extends \Codeception\Module implements DependsOnModule
      */
     public function deleteFromDatabase(string $table, array $criteria)
     {
-        $this->db->_getDriver()->deleteQueryByCriteria($table, $criteria);
+        $this->database->_getDriver()->deleteQueryByCriteria($table, $criteria);
     }
 
     /**
@@ -82,7 +83,7 @@ class Database extends \Codeception\Module implements DependsOnModule
         int $shopId = 1
     ) {
         /** @var \Codeception\Module\Db $dbModule */
-        $recordsCount = $this->db->grabNumRecords(
+        $recordsCount = $this->database->grabNumRecords(
             'oxconfig',
             [
                 'oxvarname' => $name,
@@ -90,7 +91,7 @@ class Database extends \Codeception\Module implements DependsOnModule
             ]
         );
 
-        $dbh = $this->db->_getDbh();
+        $dbh = $this->database->_getDbh();
 
         $parameters = [
             'name' => $name,
@@ -136,7 +137,7 @@ class Database extends \Codeception\Module implements DependsOnModule
             'module' => $module
         ];
 
-        $db = $this->db->_getDbh();
+        $db = $this->database->_getDbh();
         $queryResult = $db->prepare($query);
         $queryResult->execute($parameters);
 
