@@ -22,7 +22,7 @@ trait DatabaseTrait
 
     public function setupShopDatabase()
     {
-        $facts = new \OxidEsales\Facts\Facts();
+       /* $facts = new \OxidEsales\Facts\Facts();
         $resetDatabaseService = new \OxidEsales\DeveloperTools\Framework\Database\Service\ResetDatabaseService(
             new \OxidEsales\DeveloperTools\Framework\Database\Service\DatabaseChecker(),
             new \OxidEsales\DeveloperTools\Framework\Database\Service\DatabaseCreator(),
@@ -36,7 +36,7 @@ trait DatabaseTrait
             $facts->getDatabaseUserName(),
             $facts->getDatabasePassword(),
             $facts->getDatabaseName()
-        );
+        );*/
     }
 
     public function createDump($pathDump)
