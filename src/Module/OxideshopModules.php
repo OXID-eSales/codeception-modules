@@ -32,7 +32,7 @@ class OxideshopModules extends CodeceptionModule
         parent::__construct($moduleContainer, $config);
     }
 
-    public function _beforeSuite($settings = []): void
+    public function _before($settings = []): void
     {
         $this->activateModules();
     }
