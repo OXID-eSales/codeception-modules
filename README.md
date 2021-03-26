@@ -13,7 +13,8 @@ composer require --dev oxid-esales/codeception-modules
 ## Requirements
 
 * master branch is compatible with OXID eShop compilation master
-* b-6.2.x branch is compatible with OXID eShop compilation 6.x (>=6.2.x)
+* b-6.3.x branch is compatible with OXID eShop compilation 6.3.x
+* b-6.2.x branch is compatible with OXID eShop compilation 6.2.x
 
 ## Usage
   
