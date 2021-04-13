@@ -53,6 +53,8 @@ class OxideshopModules extends \Codeception\Module implements ConflictsWithModul
      */
     private function activateModules()
     {
+        // TODO: Create new mechanism for loading modules
+        /**
         $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
         $modulesToActivate = $testConfig->getModulesToActivate();
 
@@ -66,6 +68,7 @@ class OxideshopModules extends \Codeception\Module implements ConflictsWithModul
                 // we can ignore this
             }
         }
+         */
     }
 
     public function getShopModulePath(string $modulePath): string
