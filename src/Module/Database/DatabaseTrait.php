@@ -1,59 +1,71 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\Codeception\Module\Database;
 
-use OxidEsales\Eshop\Core\DatabaseProvider;
-use OxidEsales\Codeception\Module\Database\DatabaseDefaultsFileGenerator;
+use OxidEsales\Facts\Config\ConfigFile;
 use OxidEsales\Facts\Facts;
+use Symfony\Component\Process\Process;
+use Webmozart\PathUtil\Path;
 
 trait DatabaseTrait
 {
-    /**
-     * @param string $query
-     */
-    public function executeSqlQuery(string $query): void
+    public function setupShopDatabase(): void
     {
-        DatabaseProvider::getDb()->execute($query);
+        $this->debug('Setup shop database');
+        $command = Path::join((new Facts())->getVendorPath(), 'bin', 'reset-shop-database');
+        $this->debug($this->processCommand($command, []));
     }
 
-    public function setupShopDatabase()
+    public function createSqlDump(string $databaseName, string $dumpFile): void
     {
-       /* $facts = new \OxidEsales\Facts\Facts();
-        $resetDatabaseService = new \OxidEsales\DeveloperTools\Framework\Database\Service\ResetDatabaseService(
-            new \OxidEsales\DeveloperTools\Framework\Database\Service\DatabaseChecker(),
-            new \OxidEsales\DeveloperTools\Framework\Database\Service\DatabaseCreator(),
-            new \OxidEsales\DeveloperTools\Framework\Database\Service\DatabaseInitiator(new \OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContext()),
-            new \OxidEsales\DeveloperTools\Framework\Database\Service\DropDatabaseService(),
-            new \OxidEsales\DatabaseViewsGenerator\ViewsGenerator()
-        );
-        $resetDatabaseService->resetDatabase(
-            $facts->getDatabaseHost(),
-            $facts->getDatabasePort(),
-            $facts->getDatabaseUserName(),
-            $facts->getDatabasePassword(),
-            $facts->getDatabaseName()
-        );*/
+        $this->debug('Create mysqldump file: ' . $dumpFile);
+        $this->debug($this->processMysqldumpCommand($databaseName, $dumpFile));
     }
 
-    public function createDump($pathDump)
+    public function importSqlFile(string $databaseName, string $sqlFile)
     {
-        $this->debug('Create mysqldump file');
-        $facts = new Facts();
-        exec(
-            'mysqldump --defaults-file=' . $this->getMysqlConfigPath() .
-            ' --default-character-set=utf8 ' . $facts->getDatabaseName() . ' > '.$pathDump,
-            $output
-        );
-        $this->debug($output);
+        $this->debug('Import mysql file: ' . $sqlFile);
+        $this->debug($this->processMysqlCommand($databaseName, $sqlFile));
     }
 
-    private function getMysqlConfigPath()
+    private function processMysqldumpCommand(string $databaseName, string $dumpFile): string
     {
-        $generator = new DatabaseDefaultsFileGenerator(new \OxidEsales\Facts\Config\ConfigFile());
+        $command = 'mysqldump --defaults-file="$file" --default-character-set=utf8 "$name" > $dump';
+        $parameter = [
+            'file' => $this->getMysqlConfigPath() ,
+            'name' => $databaseName,
+            'dump' => $dumpFile
+        ];
+        return $this->processCommand($command, $parameter);
+    }
+
+    private function processMysqlCommand(string $databaseName, string $sqlFile): string
+    {
+        $command = 'mysql --defaults-file="$file" --default-character-set=utf8 "$name" < $sql';
+        $parameter = [
+            'file' => $this->getMysqlConfigPath() ,
+            'name' => $databaseName,
+            'sql' => $sqlFile
+        ];
+        return $this->processCommand($command, $parameter);
+    }
+
+    private function processCommand(string $command, array $parameter): string
+    {
+        $process = Process::fromShellCommandline($command);
+        $process->run(null, $parameter);
+        return $process->getOutput();
+    }
+
+    private function getMysqlConfigPath(): string
+    {
+        $generator = new DatabaseDefaultsFileGenerator(new ConfigFile());
         return $generator->generate();
     }
 }

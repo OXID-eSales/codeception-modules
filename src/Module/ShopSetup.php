@@ -1,13 +1,16 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\Codeception\Module;
 
 use Codeception\Module;
 use OxidEsales\Codeception\Module\Database\DatabaseTrait;
+use OxidEsales\Codeception\Module\Exception\FixtureFileNotFoundException;
 use OxidEsales\Facts\Facts;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -19,42 +22,38 @@ class ShopSetup extends Module
      * @var array
      */
     protected $config = [
-        'shop_dump' => '',
+        'dump' => '',
         'fixtures' => ''
         ];
 
     public function _beforeSuite($settings = array())
     {
-        $this->debug('Setup shop database');
         $this->setupShopDatabase();
-
-        $this->debug('Add test fixtures');
-        $this->executeSqlQueryFromFile($this->config['fixtures']);
-
-        $this->createDump($this->getDumpFilePath());
+        $this->importSqlFile($this->getDatabaseName(), $this->getFixturesSqlFile());
+        $this->createSqlDump($this->getDatabaseName(), $this->getDumpFilePath());
     }
 
     /**
-     * @param string $sqlFilePath
+     * @return string
+     * @throws FixtureFileNotFoundException
      */
-    private function executeSqlQueryFromFile(string $sqlFilePath): void
+    private function getFixturesSqlFile(): string
     {
+        $sqlFilePath = $this->config['fixtures'];
         $fileSystem = new Filesystem();
         if (!$fileSystem->exists($sqlFilePath)) {
             $this->debug('No fixtures file found');
-            return;
+            throw new FixtureFileNotFoundException();
         }
-        $queries = file_get_contents($sqlFilePath);
-        if (!$queries) {
-            $this->debug('No fixtures found');
-            return;
-        }
-        $this->executeSqlQuery($queries);
+        return $sqlFilePath;
     }
 
-    private function getDumpFilePath()
+    /**
+     * @return string
+     */
+    private function getDumpFilePath(): string
     {
-        $shopDumpFile = $this->config['shop_dump'];
+        $shopDumpFile = $this->config['dump'];
         $pathDir = dirname($shopDumpFile);
         $fileSystem = new Filesystem();
         if (!$fileSystem->exists($pathDir)) {
@@ -62,5 +61,13 @@ class ShopSetup extends Module
             $fileSystem->mkdir($pathDir);
         }
         return $shopDumpFile;
+    }
+
+    /**
+     * @return string
+     */
+    private function getDatabaseName(): string
+    {
+        return (new Facts())->getDatabaseName();
     }
 }
