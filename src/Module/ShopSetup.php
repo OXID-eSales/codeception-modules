@@ -28,7 +28,7 @@ class ShopSetup extends Module
 
     public function _beforeSuite($settings = array())
     {
-        $this->setupShopDatabase();
+       // $this->setupShopDatabase();
         $this->importSqlFile($this->getDatabaseName(), $this->getFixturesSqlFile());
         $this->createSqlDump($this->getDatabaseName(), $this->getDumpFilePath());
     }

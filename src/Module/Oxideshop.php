@@ -120,15 +120,6 @@ class Oxideshop extends Module implements DependsOnModule
     }
 
     /**
-     * Activates modules
-     * @deprecated since v1.2.0(2020-07-02); Will be moved to oxideshopmodules
-     */
-    private function activateModules()
-    {
-
-    }
-
-    /**
      * @param \Codeception\TestInterface $test
      * @param $fail
      */
