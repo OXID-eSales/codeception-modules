@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.6.0] - Unreleased
 
+### Added
+- Support array as translation directories list
+
 ### Changed
 - InvalidResourceException is thrown if not existing translations directory is listed
 
