@@ -9,7 +9,6 @@ namespace OxidEsales\Codeception\Module\Translation;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
-use Symfony\Component\Translation\Exception\NotFoundResourceException;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 
 /**
@@ -47,7 +46,7 @@ class LanguageDirectoryReader extends ArrayLoader
 
         foreach ($resource as $directory) {
             if (!file_exists($directory)) {
-                throw new NotFoundResourceException(sprintf('Directory "%s" not found.', $directory));
+                throw new InvalidResourceException(sprintf('Translation directory "%s" not found.', $directory));
             }
             $messages = $this->loadDirectory($messages, $directory);
         }
