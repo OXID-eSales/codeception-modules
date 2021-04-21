@@ -17,6 +17,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Public method signatures in `Module\OxideshopModules`
 
+## [1.6.0] - Unreleased
+
+### Added
+- Support array as translation directories list
+
+### Changed
+- InvalidResourceException is thrown if not existing translations directory is listed
+
 ## [1.5.0] - 2021-03-25
 
 ### Added
@@ -71,6 +79,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First version of the module introduced
 
+[1.6.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.5.0...b-6.2.x
 [1.5.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.2.0...v1.3.0

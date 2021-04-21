@@ -62,13 +62,22 @@ class TranslationsModule extends \Codeception\Module
     {
         $fullPaths = [];
         if ($this->config['paths']) {
-            $customPaths = explode(',', $this->config['paths']);
+            $customPaths = $this->normalizeCustomPaths($this->config['paths']);
             $this->paths = array_merge($this->paths, $customPaths);
         }
         foreach ($this->paths as $path) {
             $fullPaths[] = $this->config['shop_path'].'/'.trim($path, '/').'/';
         }
         return $fullPaths;
+    }
+
+    private function normalizeCustomPaths($paths): array
+    {
+        if (!is_array($paths)) {
+            $paths = explode(',', $paths);
+        }
+
+        return $paths;
     }
 
     /**
