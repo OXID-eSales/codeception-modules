@@ -127,12 +127,12 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
         $this->switchToFrame();
 
         if ($desiredParent) {
-            $this->webdriver->waitForElement("#{$desiredParent}", 5);
+            $this->webdriver->waitForElement("#{$desiredParent}");
             $this->switchToFrame($desiredParent);
             $this->oxideshop->waitForDocumentReadyState();
         }
 
-        $this->webdriver->waitForElement("#{$desiredFrame}", 5);
+        $this->webdriver->waitForElement("#{$desiredFrame}");
         $this->switchToFrame($desiredFrame);
         $this->oxideshop->waitForDocumentReadyState();
     }
