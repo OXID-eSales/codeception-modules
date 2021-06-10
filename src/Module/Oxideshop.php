@@ -163,6 +163,6 @@ class Oxideshop extends Module implements DependsOnModule
     public function regenerateDatabaseViews(): void
     {
         $vendorPath = (new Facts())->getVendorPath();
-        exec($vendorPath. '/bin/oe-eshop-db_views_regenerate');
+        exec($vendorPath. '/bin/oe-eshop-db_views_generate');
     }
 }
