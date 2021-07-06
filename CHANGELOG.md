@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.0.0] -  Unreleased
+## [2.0.0] - 2021-07-06
 
 ### Added
 - Added `codeception/module-filesystem` in `composer.json` file
@@ -79,6 +79,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First version of the module introduced
 
+[2.0.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.6.0...v2.0.0
 [1.6.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.3.0...v1.4.0
