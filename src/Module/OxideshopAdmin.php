@@ -148,6 +148,7 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
     {
         if (is_null($elementId)) {
             $this->webdriver->webDriver->switchTo()->defaultContent();
+            $this->oxideshop->wait(1);
             return;
         }
 
@@ -157,5 +158,6 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
         }
 
         $this->webdriver->webDriver->switchTo()->frame($els[0]);
+        $this->oxideshop->wait(1);
     }
 }

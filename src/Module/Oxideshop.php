@@ -103,6 +103,14 @@ class Oxideshop extends Module implements DependsOnModule
     /**
      * @param int $timeout
      */
+    public function wait(int $timeout)
+    {
+        $this->webDriver->wait($timeout);
+    }
+
+    /**
+     * @param int $timeout
+     */
     public function waitForPageLoad(int $timeout = 60)
     {
         $this->waitForDocumentReadyState($timeout);
