@@ -137,7 +137,7 @@ class Database extends \Codeception\Module implements DependsOnModule
             'module' => $module
         ];
 
-        $db = $this->database->_getDbh();
+        $db = $this->db->_getDbh();
         $queryResult = $db->prepare($query);
         $queryResult->execute($parameters);
 
