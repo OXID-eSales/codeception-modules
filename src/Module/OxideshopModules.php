@@ -6,12 +6,13 @@
 
 namespace OxidEsales\Codeception\Module;
 
-require_once __DIR__.'/../../../../oxid-esales/testing-library/base.php';
+#require_once __DIR__.'/../../../../oxid-esales/testing-library/base.php';
 
 use Codeception\Lib\Interfaces\ConflictsWithModule;
 use Codeception\Lib\ModuleContainer;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Exception\ModuleSetupException;
 use OxidEsales\Facts\Facts;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * Class Oxideshop
@@ -20,17 +21,14 @@ use OxidEsales\Facts\Facts;
 class OxideshopModules extends \Codeception\Module implements ConflictsWithModule
 {
     /** @var string */
-    private $shopRootPath;
+    private $consoleRunner;
 
-    /**
-     * @var string
-     */
-    private $communityEditionRootPath;
-
-    public function __construct(ModuleContainer $moduleContainer, $config = null)
-    {
-        $this->shopRootPath = (new Facts())->getShopRootPath();
-        $this->communityEditionRootPath = (new Facts())->getCommunityEditionRootPath();
+    public function __construct(
+        ModuleContainer $moduleContainer,
+        $config = null
+    ) {
+        $shopRoot = (new Facts())->getCommunityEditionRootPath();
+        $this->consoleRunner = "$shopRoot/bin/oe-console";
 
         parent::__construct($moduleContainer, $config);
     }
@@ -40,74 +38,47 @@ class OxideshopModules extends \Codeception\Module implements ConflictsWithModul
         return 'OxidEsales\Codeception\Module\Oxideshop';
     }
 
-    /**
-     * Reset context and activate modules before test
-     */
-    public function _beforeSuite($settings = [])
+    public function _before($settings = []): void
     {
         $this->activateModules();
+    }
+
+    /** @param string $modulePath */
+    public function installModule(string $modulePath): void
+    {
+        exec("$this->consoleRunner oe:module:install $modulePath", $output, $return);
+        if ($return !== Command::SUCCESS) {
+            throw new \RuntimeException("Module '$modulePath' installation failed: $output");
+        }
+    }
+
+    /** @param string $moduleId */
+    public function uninstallModule(string $moduleId): void
+    {
+        exec("$this->consoleRunner oe:module:uninstall $moduleId", $output, $return);
+        if ($return !== Command::SUCCESS) {
+            throw new \RuntimeException("Module '$moduleId' uninstallation failed: $output");
+        }
+    }
+
+    /** @param string $moduleId */
+    public function activateModule(string $moduleId): void
+    {
+        exec("$this->consoleRunner oe:module:activate $moduleId");
+    }
+
+    /** @param string $moduleId */
+    public function deactivateModule(string $moduleId): void
+    {
+        exec("$this->consoleRunner oe:module:deactivate $moduleId");
     }
 
     /**
      * Activates modules
      */
-    private function activateModules()
+    private function activateModules(): void
     {
         // TODO: Create new mechanism for loading modules
-        /**
-        $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
-        $modulesToActivate = $testConfig->getModulesToActivate();
 
-        if ($modulesToActivate) {
-            $serviceCaller = new \OxidEsales\TestingLibrary\ServiceCaller();
-            $serviceCaller->setParameter('modulestoactivate', $modulesToActivate);
-            try {
-                $serviceCaller->callService('ModuleInstaller', 1);
-            } catch (ModuleSetupException $e) {
-                // this may happen if the module is already active,
-                // we can ignore this
-            }
-        }
-         */
-    }
-
-    public function getShopModulePath(string $modulePath): string
-    {
-        return $this->shopRootPath . '/source/modules' . substr($modulePath, strrpos($modulePath, '/'));
-    }
-
-    public function installModule($modulePath)
-    {
-        //first Copy
-        exec('cp ' . $modulePath . ' ' . $this->shopRootPath . '/source/modules/ -R');
-        //now activate
-        exec(
-            $this->communityEditionRootPath .
-            '/bin/oe-console oe:module:install-configuration ' .
-            $this->getShopModulePath($modulePath)
-        );
-    }
-
-    public function uninstallModule($modulePath, $moduleId)
-    {
-        exec(
-            $this->communityEditionRootPath .
-            '/bin/oe-console oe:module:uninstall-configuration ' .
-            $moduleId
-        );
-        $path = $this->getShopModulePath($modulePath);
-        if (file_exists($path) && is_dir($path)) {
-            exec('rm ' . $path . ' -R');
-        }
-    }
-
-    public function activateModule($moduleId)
-    {
-        exec($this->communityEditionRootPath . '/bin/oe-console oe:module:activate ' . $moduleId);
-    }
-
-    public function deactivateModule($moduleId)
-    {
-        exec($this->communityEditionRootPath . '/bin/oe-console oe:module:deactivate ' . $moduleId);
     }
 }
