@@ -1,17 +1,16 @@
 <?php
+
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\Codeception\Module;
 
 use Codeception\Util\Fixtures;
 
-/**
- * Class FixturesHelper
- * @package OxidEsales\Codeception\Module
- */
 class FixturesHelper
 {
     /**

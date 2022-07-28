@@ -1,20 +1,20 @@
 <?php
+
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\Codeception\Module\Translation;
 
-use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\Loader\ArrayLoader;
+use Symfony\Component\Translation\MessageCatalogue;
 
-/**
- * Class LanguageDirectoryReader
- * @package OxidEsales\Codeception\Module\Translation
- */
 class LanguageDirectoryReader extends ArrayLoader
 {
     /**
@@ -35,9 +35,8 @@ class LanguageDirectoryReader extends ArrayLoader
     /**
      * {@inheritdoc}
      */
-    public function load($resource, $locale, $domain = 'messages')
+    public function load(mixed $resource, string $locale, string $domain = 'messages'): MessageCatalogue
     {
-        // not an array
         if (!is_array($resource)) {
             $resource = [$resource];
         }
@@ -50,9 +49,7 @@ class LanguageDirectoryReader extends ArrayLoader
             }
             $messages = $this->loadDirectory($messages, $directory);
         }
-        $catalogue = parent::load($messages, $locale, $domain);
-
-        return $catalogue;
+        return parent::load($messages, $locale, $domain);
     }
 
     /**
@@ -60,7 +57,7 @@ class LanguageDirectoryReader extends ArrayLoader
      *
      * @return array
      */
-    private function loadFile(string $file): array
+    private function loadFile(SplFileInfo $file): array
     {
         $aLang = [];
         require $file;
@@ -80,7 +77,7 @@ class LanguageDirectoryReader extends ArrayLoader
         foreach ($finder as $file) {
             $lang = $this->loadFile($file);
             // not an array
-            if (!is_array($lang)) {
+            if (!\is_array($lang)) {
                 throw new InvalidResourceException(sprintf('Unable to load file "%s".', $file));
             }
 

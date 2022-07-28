@@ -1,18 +1,17 @@
 <?php
+
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\Codeception\Module;
 
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module\Db;
 
-/**
- * Class Database
- * @package OxidEsales\Codeception\Module
- */
 class Database extends \Codeception\Module implements DependsOnModule
 {
     /**
@@ -20,10 +19,7 @@ class Database extends \Codeception\Module implements DependsOnModule
      */
     private $database;
 
-    /**
-     * @return array
-     */
-    public function _depends()
+    public function _depends(): array
     {
         return [Db::class => 'Codeception\Module\Db is required'];
     }

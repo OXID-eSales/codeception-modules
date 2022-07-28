@@ -13,8 +13,8 @@
     "proprietary"
   ],
   "require": {
-    "symfony/translation": "^3.4",
-    "codeception/module-filesystem": "^1.0"
+    "symfony/translation": "^6.0",
+    "codeception/module-filesystem": "*"
   },
   "autoload": {
     "psr-4": {

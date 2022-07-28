@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\Codeception\Module;
 
 use Codeception\Lib\Interfaces\DependsOnModule;
@@ -25,10 +27,7 @@ class Oxideshop extends Module implements DependsOnModule
 
     private Db $database;
 
-    /**
-     * @var array
-     */
-    protected $config = ['screen_shot_url' => ''];
+    protected array $config = ['screen_shot_url' => ''];
 
     public function _depends(): array
     {

@@ -5,6 +5,8 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\Codeception\Module;
 
 use Codeception\Exception\ElementNotFound;
@@ -12,10 +14,6 @@ use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 use Codeception\Module\WebDriver;
 
-/**
- * Class OxideshopAdmin
- * @package OxidEsales\Codeception\Module
- */
 class OxideshopAdmin extends Module implements DependsOnModule
 {
     /**

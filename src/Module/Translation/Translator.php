@@ -1,17 +1,16 @@
 <?php
+
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\Codeception\Module\Translation;
 
 use Symfony\Component\Translation\Translator as SymfonyTranslator;
 
-/**
- * Class Translator
- * @package OxidEsales\Codeception\Module\Translation
- */
 class Translator implements TranslatorInterface
 {
     /**

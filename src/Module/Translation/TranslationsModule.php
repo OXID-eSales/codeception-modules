@@ -1,15 +1,14 @@
 <?php
+
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\Codeception\Module\Translation;
 
-/**
- * Class TranslationsModule
- * @package OxidEsales\Codeception\Module\Translation
- */
 class TranslationsModule extends \Codeception\Module
 {
     /**
@@ -27,19 +26,13 @@ class TranslationsModule extends \Codeception\Module
      */
     private $fileNamePatterns = ['*lang.php', '*options.php'];
 
-    /**
-     * @var array
-     */
-    protected $config = [
+    protected array $config = [
         'paths' => null,
         'locale' => null,
         'file_name_patterns' => null,
     ];
 
-    /**
-     * @var array
-     */
-    protected $requiredFields = ['shop_path'];
+    protected array $requiredFields = ['shop_path'];
 
     /**
      * Initializes translator

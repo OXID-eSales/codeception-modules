@@ -12,10 +12,6 @@ namespace OxidEsales\Codeception\Module;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\TestInterface;
 
-/**
- * Class FlowTheme
- * @package OxidEsales\Codeception\Module
- */
 class FlowTheme extends \Codeception\Module implements DependsOnModule
 {
     /**
