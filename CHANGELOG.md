@@ -84,11 +84,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First version of the module introduced
 
-<<<<<<< HEAD
 [2.0.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.6.0...v2.0.0
-=======
-[1.7.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.6.0...b-6.3.x
->>>>>>> b-6.3.x
 [1.6.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.3.0...v1.4.0
