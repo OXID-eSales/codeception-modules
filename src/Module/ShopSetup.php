@@ -13,6 +13,7 @@ use OxidEsales\Codeception\Module\Database\DatabaseTrait;
 use OxidEsales\Codeception\Module\Exception\FixtureFileNotFoundException;
 use OxidEsales\Facts\Facts;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
 
 class ShopSetup extends Module
 {
@@ -23,14 +24,26 @@ class ShopSetup extends Module
      */
     protected $config = [
         'dump' => '',
-        'fixtures' => ''
+        'fixtures' => '',
+        'license' => ''
         ];
 
     public function _beforeSuite($settings = array())
     {
         $this->setupShopDatabase();
+        $this->addLicenseKey();
         $this->importSqlFile($this->getDatabaseName(), $this->getFixturesSqlFile());
         $this->createSqlDump($this->getDatabaseName(), $this->getDumpFilePath());
+    }
+
+    private function addLicenseKey()
+    {
+        if ($this->config['license']) {
+            $this->debug('Add license key');
+            $command = $this->getConsolePath() .
+                ' oe:license:add ' . $this->config['license'];
+            $this->debug($this->processCommand($command, []));
+        }
     }
 
     /**
@@ -69,5 +82,29 @@ class ShopSetup extends Module
     private function getDatabaseName(): string
     {
         return (new Facts())->getDatabaseName();
+    }
+
+    private function getConsolePath(): string
+    {
+        $rootPath      = (new Facts())->getShopRootPath();
+        $possiblePaths = [
+            '/bin/oe-console',
+            '/vendor/bin/oe-console',
+        ];
+
+        foreach ($possiblePaths as $path) {
+            if (is_file($rootPath . $path)) {
+                return $rootPath . $path;
+            }
+        }
+
+        throw new \Exception('error: console not found');
+    }
+
+    private function processCommand(string $command, array $parameter): string
+    {
+        $process = Process::fromShellCommandline($command);
+        $process->run(null, $parameter);
+        return $process->getOutput();
     }
 }

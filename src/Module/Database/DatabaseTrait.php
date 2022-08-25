@@ -19,8 +19,8 @@ trait DatabaseTrait
     {
         $this->debug('Setup shop database');
         $facts = new Facts();
-        $command = $facts->getCommunityEditionRootPath() .
-            '/bin/oe-console oe:database:reset' .
+        $command = $this->getConsolePath() .
+            ' oe:database:reset' .
             ' --db-host=' . $facts->getDatabaseHost() .
             ' --db-port=' . $facts->getDatabasePort() .
             ' --db-name=' . $facts->getDatabaseName() .
@@ -75,5 +75,22 @@ trait DatabaseTrait
     {
         $generator = new DatabaseDefaultsFileGenerator(new ConfigFile());
         return $generator->generate();
+    }
+
+    private function getConsolePath(): string
+    {
+        $rootPath      = (new Facts())->getShopRootPath();
+        $possiblePaths = [
+            '/bin/oe-console',
+            '/vendor/bin/oe-console',
+        ];
+
+        foreach ($possiblePaths as $path) {
+            if (is_file($rootPath . $path)) {
+                return $rootPath . $path;
+            }
+        }
+
+        throw new \Exception('error: console not found');
     }
 }
