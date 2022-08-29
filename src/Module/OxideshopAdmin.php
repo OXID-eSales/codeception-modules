@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
@@ -6,15 +7,16 @@
 
 namespace OxidEsales\Codeception\Module;
 
-require_once __DIR__.'/../../../../oxid-esales/testing-library/base.php';
-
+use Codeception\Exception\ElementNotFound;
 use Codeception\Lib\Interfaces\DependsOnModule;
+use Codeception\Module;
+use Codeception\Module\WebDriver;
 
 /**
  * Class OxideshopAdmin
  * @package OxidEsales\Codeception\Module
  */
-class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
+class OxideshopAdmin extends Module implements DependsOnModule
 {
     /**
      * Admin interface frame IDs
@@ -30,45 +32,26 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
      * Admin interface frame dependency structure. One level supported.
      *
      * Frame -> Parent frame
-     *
-     * @var array
      */
-    private $frameParents = [
+    private array $frameParents = [
         self::FRAME_ADMINNAV => self::FRAME_NAVIGATION,
         self::FRAME_LIST => self::FRAME_BASE,
         self::FRAME_EDIT => self::FRAME_BASE
     ];
 
-    /**
-     * Dependency on Oxideshop module
-     *
-     * @var Oxideshop
-     */
-    private $oxideshop;
+    private Oxideshop $oxideshop;
 
-    /**
-     * Dependency on Webdriver module
-     *
-     * @var \Codeception\Module\WebDriver
-     */
-    private $webdriver;
+    private WebDriver $webdriver;
 
-    /**
-     * @return array
-     */
-    public function _depends()
+    public function _depends(): array
     {
         return [
-            \Codeception\Module\WebDriver::class => 'Codeception\Module\WebDriver is required',
+            WebDriver::class => 'Codeception\Module\WebDriver is required',
             Oxideshop::class => 'Codeception\Module\Oxideshop is required'
         ];
     }
 
-    /**
-     * @param \Codeception\Module\WebDriver $webDriver
-     * @param Oxideshop $oxideshop
-     */
-    public function _inject(\Codeception\Module\WebDriver $webDriver, Oxideshop $oxideshop)
+    public function _inject(WebDriver $webDriver, Oxideshop $oxideshop)
     {
         $this->webdriver = $webDriver;
         $this->oxideshop = $oxideshop;
@@ -77,7 +60,7 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
     /**
      * Select Header frame in Admin panel to be active now
      */
-    public function selectHeaderFrame()
+    public function selectHeaderFrame(): void
     {
         $this->selectFrameInAdmin(self::FRAME_HEADER);
     }
@@ -86,7 +69,7 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
     /**
      * Select Base frame in Admin panel to be active now
      */
-    public function selectBaseFrame()
+    public function selectBaseFrame(): void
     {
         $this->selectFrameInAdmin(self::FRAME_BASE);
     }
@@ -94,7 +77,7 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
     /**
      * Select Edit frame in Admin panel to be active now
      */
-    public function selectEditFrame()
+    public function selectEditFrame(): void
     {
         $this->selectFrameInAdmin(self::FRAME_EDIT);
     }
@@ -102,7 +85,7 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
     /**
      * Select Navigation frame in Admin panel to be active now
      */
-    public function selectNavigationFrame()
+    public function selectNavigationFrame(): void
     {
         $this->selectFrameInAdmin(self::FRAME_ADMINNAV);
     }
@@ -110,7 +93,7 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
     /**
      * Select List frame in Admin panel to be active now
      */
-    public function selectListFrame()
+    public function selectListFrame(): void
     {
         $this->selectFrameInAdmin(self::FRAME_LIST);
     }
@@ -120,7 +103,7 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
      *
      * @param string $desiredFrame
      */
-    private function selectFrameInAdmin($desiredFrame)
+    private function selectFrameInAdmin(string $desiredFrame): void
     {
         $desiredParent = $this->frameParents[$desiredFrame] ?? '';
 
@@ -140,11 +123,11 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
     /**
      * Switch to frame
      *
-     * Method is temporary untill webdriver will provide working solution for switching the frames
+     * Method is temporary until webdriver will provide working solution for switching the frames
      *
      * @param $elementId
      */
-    private function switchToFrame($elementId = null)
+    private function switchToFrame($elementId = null): void
     {
         if (is_null($elementId)) {
             $this->webdriver->webDriver->switchTo()->defaultContent();
@@ -153,7 +136,7 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
 
         $els = $this->webdriver->_findElements("frame[id='{$elementId}']");
         if (!count($els)) {
-            throw new ElementNotFound($selector, "Frame was not found by CSS or XPath");
+            throw new ElementNotFound($elementId, "Frame was not found by CSS or XPath");
         }
 
         $this->webdriver->webDriver->switchTo()->frame($els[0]);

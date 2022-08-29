@@ -9,81 +9,70 @@ declare(strict_types=1);
 
 namespace OxidEsales\Codeception\Module;
 
-require_once __DIR__.'/../../../../oxid-esales/testing-library/base.php';
-
 use Codeception\Lib\ModuleContainer;
-use Codeception\Module as CodeceptionModule;
-use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Exception\ModuleSetupException;
-use OxidEsales\Facts\Facts;
-use Symfony\Component\Console\Command\Command;
+use Codeception\Module;
+use Codeception\TestInterface;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Bridge\ModuleActivationBridgeInterface;
+use Psr\Container\ContainerInterface;
 
-class OxideshopModules extends CodeceptionModule
+/**
+ * Class Oxideshop
+ * @package OxidEsales\Codeception\Module
+ */
+class OxideshopModules extends Module
 {
-    /** @var string */
-    private $consoleRunner;
+    use CommandTrait;
 
     public function __construct(
         ModuleContainer $moduleContainer,
         $config = null
-    ) {
-        $shopRoot = (new Facts())->getCommunityEditionRootPath();
-        $this->consoleRunner = "$shopRoot/bin/oe-console";
-
+    )
+    {
         parent::__construct($moduleContainer, $config);
     }
 
-    public function _before($settings = []): void
+    public function _before(TestInterface $test): void
     {
+        $this->debug('Activate Modules');
         $this->activateModules();
     }
 
-    /** @param string $modulePath */
     public function installModule(string $modulePath): void
     {
-        exec("$this->consoleRunner oe:module:install $modulePath", $output, $return);
-        if ($return !== Command::SUCCESS) {
-            throw new \RuntimeException("Module '$modulePath' installation failed: $output");
-        }
+        $this->processConsoleCommand('oe:module:install ' . $modulePath);
     }
 
-    /** @param string $moduleId */
     public function uninstallModule(string $moduleId): void
     {
-        exec("$this->consoleRunner oe:module:uninstall $moduleId", $output, $return);
-        if ($return !== Command::SUCCESS) {
-            throw new \RuntimeException("Module '$moduleId' uninstallation failed: $output");
-        }
+        $this->processConsoleCommand('oe:module:uninstall ' . $moduleId);
     }
 
-    /** @param string $moduleId */
     public function activateModule(string $moduleId): void
     {
-        exec("$this->consoleRunner oe:module:activate $moduleId");
+        $this->processConsoleCommand('oe:module:activate ' . $moduleId);
     }
 
-    /** @param string $moduleId */
     public function deactivateModule(string $moduleId): void
     {
-        exec("$this->consoleRunner oe:module:deactivate $moduleId");
+        $this->processConsoleCommand('oe:module:deactivate ' . $moduleId);
     }
 
-    /**
-     * Activates modules
-     */
-    private function activateModules(): void
+    public function activateModules(): void
     {
-        $testConfig = new \OxidEsales\TestingLibrary\TestConfig();
-        $modulesToActivate = $testConfig->getModulesToActivate();
+        $modulesToActivate = $this->getModuleIds();
 
-        if ($modulesToActivate) {
-            $serviceCaller = new \OxidEsales\TestingLibrary\ServiceCaller();
-            $serviceCaller->setParameter('modulestoactivate', $modulesToActivate);
-            try {
-                $serviceCaller->callService('ModuleInstaller', 1);
-            } catch (ModuleSetupException $e) {
-                // this may happen if the module is already active,
-                // we can ignore this
-            }
+        foreach ($modulesToActivate as $moduleId) {
+            $this->activateModule($moduleId);
         }
+    }
+
+    private function getModuleIds(): array
+    {
+        if (getenv('MODULE_IDS')) {
+            $ids = array_map('trim', explode(',', getenv('MODULE_IDS')));
+        }
+        return $ids ?? [];
     }
 }
