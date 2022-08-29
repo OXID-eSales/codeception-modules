@@ -12,10 +12,6 @@ namespace OxidEsales\Codeception\Module;
 use Codeception\Lib\ModuleContainer;
 use Codeception\Module;
 use Codeception\TestInterface;
-use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Bridge\ModuleActivationBridgeInterface;
-use Psr\Container\ContainerInterface;
 
 /**
  * Class Oxideshop
