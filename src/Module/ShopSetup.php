@@ -25,7 +25,7 @@ class ShopSetup extends Module
     /**
      * @var array
      */
-    protected $config = [
+    protected array $config = [
         'dump' => '',
         'fixtures' => '',
         'license' => ''
