@@ -60,5 +60,9 @@ class SelectTheme extends Module implements DependsOnModule
             )
         );
         $sth->execute();
+        $sth->closeCursor();
+
+        $this->database->updateConfigInDatabase('iNewBasketItemMessage', 0, 'int');
+        $this->database->updateConfigInDatabase('blDisableNavBars', '', 'str');
     }
 }
