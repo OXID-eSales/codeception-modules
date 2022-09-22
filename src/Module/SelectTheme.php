@@ -23,7 +23,7 @@ class SelectTheme extends Module implements DependsOnModule
 {
     private Database $database;
 
-    protected $requiredFields = ['themeId'];
+    protected array $requiredFields = ['themeId'];
 
     private Db $db;
 
