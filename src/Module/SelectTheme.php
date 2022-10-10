@@ -13,7 +13,7 @@ use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 use Codeception\TestInterface;
 use Codeception\Module\Db;
-use Error;
+use OxidEsales\Eshop\Core\Theme;
 
 /**
  * Class SelectTheme
@@ -46,23 +46,8 @@ class SelectTheme extends Module implements DependsOnModule
         $this->database->updateConfigInDatabase('sTheme', $this->config['themeId'], 'str');
         $this->database->updateConfigInDatabase('sCustomTheme', '', 'str');
 
-        if ($this->config['themeId'] === 'twig') {
-            $this->importTwigThemeConfigIntoDatabase();
-        }
-    }
-
-    private function importTwigThemeConfigIntoDatabase(): void
-    {
-        $dbh = $this->db->_getDbh();
-        $sth = $dbh->prepare(
-            file_get_contents(
-                __DIR__ . '/../../../twig-theme/setup.sql'
-            )
-        );
-        $sth->execute();
-        $sth->closeCursor();
-
-        $this->database->updateConfigInDatabase('iNewBasketItemMessage', 0, 'int');
-        $this->database->updateConfigInDatabase('blDisableNavBars', '', 'str');
+        $theme = new Theme();
+        $theme->load($this->config['themeId']);
+        $theme->activate();
     }
 }
