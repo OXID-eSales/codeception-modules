@@ -20,7 +20,7 @@ class OxideshopAdmin extends \Codeception\Module implements DependsOnModule
      * Admin interface frame IDs
      */
     private const FRAME_LIST = 'list';
-    private const FRAME_NAVIGATION = 'navigation';
+    private const FRAME_NAVIGATION = 'navigationfrm';
     private const FRAME_BASE = 'basefrm';
     private const FRAME_EDIT = 'edit';
     private const FRAME_HEADER = 'header';
