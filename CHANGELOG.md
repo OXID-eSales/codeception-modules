@@ -9,8 +9,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Updated Symfony components to v6
 
-## [2.1.0] - Unreleased
-
 ### Added
 - SelectTheme module
 - ShopSetup module
@@ -30,6 +28,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Public method signatures in `Module\OxideshopModules`
+
+## [1.8.0] - unreleased
+
+### Fixed
+- Renamed navigation frame usage
+
+## [1.7.0] - unreleased
+
+### Added
+- SelectTheme module
 
 ## [1.6.0] - 2021-07-06
 
@@ -93,7 +101,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First version of the module introduced
 
+[3.0.0]: https://github.com/OXID-eSales/codeception-modules/compare/v2.0.0...b-7.0.x
 [2.0.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.6.0...v2.0.0
+[1.8.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.6.0...b-6.5.x
+[1.7.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.6.0...b-6.3.x
 [1.6.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.3.0...v1.4.0
