@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [3.0.0] - Unreleased
+## [3.0.0] - 2022-10-28
 
 ### Changed
 - Updated Symfony components to v6
@@ -96,7 +96,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First version of the module introduced
 
-[3.0.0]: https://github.com/OXID-eSales/codeception-modules/compare/v2.0.0...b-7.0.x
+[3.0.0]: https://github.com/OXID-eSales/codeception-modules/compare/v2.0.0...v3.0.0
 [2.0.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.6.0...v2.0.0
 [1.7.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.6.0...b-6.3.x
 [1.6.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.5.0...v1.6.0
