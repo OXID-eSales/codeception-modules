@@ -83,7 +83,7 @@ class Oxideshop extends Module implements DependsOnModule
 
     public function waitForAjax(int $timeout = 60): void
     {
-        $this->webDriver->waitForJS('y=(window.jQuery|$); return !y || y.active == 0;', $timeout);
+        $this->webDriver->waitForJS("return $.active == 0;",10);
         $this->webDriver->wait(1);
     }
 
