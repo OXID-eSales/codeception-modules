@@ -25,6 +25,8 @@ class OxideshopAdmin extends Module implements DependsOnModule
     private const FRAME_EDIT = 'edit';
     private const FRAME_HEADER = 'header';
     private const FRAME_ADMINNAV = 'adminnav';
+    private const DYNEXPORT_DO = 'dynexport_do';
+    private const DYNEXPORT_MAIN = 'dynexport_main';
 
     /**
      * Admin interface frame dependency structure. One level supported.
@@ -34,7 +36,9 @@ class OxideshopAdmin extends Module implements DependsOnModule
     private array $frameParents = [
         self::FRAME_ADMINNAV => self::FRAME_NAVIGATION,
         self::FRAME_LIST => self::FRAME_BASE,
-        self::FRAME_EDIT => self::FRAME_BASE
+        self::FRAME_EDIT => self::FRAME_BASE,
+        self::DYNEXPORT_DO => self::FRAME_BASE,
+        self::DYNEXPORT_MAIN => self::FRAME_BASE,
     ];
 
     private Oxideshop $oxideshop;
@@ -94,6 +98,16 @@ class OxideshopAdmin extends Module implements DependsOnModule
     public function selectListFrame(): void
     {
         $this->selectFrameInAdmin(self::FRAME_LIST);
+    }
+
+    public function selectGenericExportStatusFrame(): void
+    {
+        $this->selectFrameInAdmin(self::DYNEXPORT_DO);
+    }
+
+    public function selectGenericExportMainFrame(): void
+    {
+        $this->selectFrameInAdmin(self::DYNEXPORT_MAIN);
     }
 
     /**
