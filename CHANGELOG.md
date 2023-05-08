@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     - `selectGenericExportStatusFrame()`
     - `selectGenericExportMainFrame()`
 
+### Added
+- License updated
+
 ### Removed
 - Dependency to `webmozart/path-util`
 
