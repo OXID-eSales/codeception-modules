@@ -10,7 +10,7 @@
     "helper",
     "eShop"
   ],
-  "homepage": "https://www.oxid-esales.com/en/home.html",
+  "homepage": "https://www.oxid-esales.com/en",
   "require": {
     "codeception/module-filesystem": "*",
     "symfony/translation": "^6.0"
