@@ -138,4 +138,9 @@ class Database extends \Codeception\Module implements DependsOnModule
 
         return $queryResult->fetch();
     }
+
+    public function executeQuery($query, array $params): \PDOStatement
+    {
+        return $this->database->_getDriver()->executeQuery($query, $params);
+    }
 }
