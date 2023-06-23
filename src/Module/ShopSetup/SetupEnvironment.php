@@ -7,28 +7,39 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\Codeception\Module\Setup;
+namespace OxidEsales\Codeception\Module\ShopSetup;
 
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 use Codeception\TestInterface;
 use OxidEsales\Codeception\Module\CommandTrait;
 use OxidEsales\Codeception\Module\Database;
+use OxidEsales\Codeception\ShopSetup\DataObject\UserInput;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContext;
 use OxidEsales\EshopCommunity\Setup\Utilities;
 use OxidEsales\Facts\Edition\EditionSelector;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
-class Configurator extends Module implements DependsOnModule
+class SetupEnvironment extends Module implements DependsOnModule
 {
     use CommandTrait;
 
     private Database $database;
-    private FileSystem $fileSystem;
+    private Filesystem $fileSystem;
     private string $htaccessFile;
     private string $databaseSchemaFile;
     private string $configFile;
+    private UserInputPopulator $userInputPopulator;
+
+    protected array $requiredFields = [
+        'theme_id',
+        'db_host',
+        'db_port',
+        'db_name',
+        'db_user_name',
+        'db_user_password',
+    ];
 
     public function _depends(): array
     {
@@ -37,7 +48,7 @@ class Configurator extends Module implements DependsOnModule
         ];
     }
 
-    public function _initialize()
+    public function _initialize(): void
     {
         parent::_initialize();
 
@@ -52,6 +63,7 @@ class Configurator extends Module implements DependsOnModule
             'Setup/Sql/database_schema.sql'
         );
         $this->configFile = (new BasicContext())->getConfigFilePath();
+        $this->userInputPopulator = new UserInputPopulator($this->config);
     }
 
     public function _inject(Database $database): void
@@ -65,9 +77,16 @@ class Configurator extends Module implements DependsOnModule
         $this->prepareConfigIncFileForSetup();
     }
 
+    public function getDataForUserInput(): UserInput
+    {
+        return $this->userInputPopulator
+            ->populate(
+                new UserInput()
+            );
+    }
+
     public function activateTheme(string $themeId): void
     {
-        /** @todo command depends on developer-tools */
         $this->processConsoleCommand(
             "oe:theme:activate $themeId"
         );
@@ -131,7 +150,7 @@ class Configurator extends Module implements DependsOnModule
             []
         );
         $this->database->executeQuery(
-            "CREATE TABLE IF NOT EXISTS `{$databaseName}`.`oxconfig`(`id` SMALLINT)",
+            "CREATE TABLE IF NOT EXISTS `$databaseName`.`oxconfig`(`id` SMALLINT)",
             []
         );
     }
@@ -163,6 +182,9 @@ class Configurator extends Module implements DependsOnModule
 
     private function prepareConfigIncFileForSetup(): void
     {
+        if ($this->fileSystem->exists($this->configFile)) {
+            $this->fileSystem->remove($this->configFile);
+        }
         $this->fileSystem->copy($this->configFile . '.dist', $this->configFile);
         $this->fileSystem->chmod($this->configFile, 0777);
         $this->fileSystem->appendToFile($this->configFile, '$this->blDelSetupDir = false;');
