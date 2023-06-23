@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v3.2.0] - Unreleased
+
+### Added
+- Modules:
+  - `ShopSetup\SetupEnvironment`
+- Methods:
+  - `Database::executeQuery()`
+
 ## [v3.1.0] - 2023-04-20
 
 ### Added
