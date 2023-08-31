@@ -75,7 +75,7 @@ class ShopSetup extends Module
 
     private function processMysqldumpCommand(string $databaseName, string $dumpFile): string
     {
-        $command = 'mysqldump --defaults-file="$file" --default-character-set=utf8 "$name" > $dump';
+        $command = 'mysqldump --defaults-file="$file" --default-character-set=utf8 --complete-insert "$name" > $dump';
         $parameter = [
             'file' => $this->getMysqlConfigPath() ,
             'name' => $databaseName,
