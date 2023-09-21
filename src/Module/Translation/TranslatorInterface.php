@@ -9,11 +9,9 @@ namespace OxidEsales\Codeception\Module\Translation;
 
 interface TranslatorInterface
 {
-    /**
-     * @param string $string
-     *
-     * @return string
-     */
-    public static function translate(string $string);
+    public static function translate(string $string): string;
 
+    public static function switchTranslationDomain(string $domain): void;
+
+    public static function addResource(string $locale, array $paths, string $domain): void;
 }

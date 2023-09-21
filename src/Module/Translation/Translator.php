@@ -13,52 +13,46 @@ use Symfony\Component\Translation\Translator as SymfonyTranslator;
 
 class Translator implements TranslatorInterface
 {
-    /**
-     * @var SymfonyTranslator
-     */
-    private static $sfTranslator;
+    public const TRANSLATION_DOMAIN_SHOP = 'shop';
+    public const TRANSLATION_DOMAIN_ADMIN = 'admin';
+    private static SymfonyTranslator $sfTranslator;
+    private static string $domain = self::TRANSLATION_DOMAIN_SHOP;
 
-    /**
-     * @param string $locale
-     * @param array  $paths
-     * @param array  $fileNamePatterns
-     */
-    public static function initialize(string $locale, array $paths, array $fileNamePatterns)
+    public static function initialize(string $locale, array $paths, array $fileNamePatterns): void
     {
         self::$sfTranslator = new SymfonyTranslator($locale);
         self::$sfTranslator->setFallbackLocales(['en', 'de']);
         self::$sfTranslator->addLoader('oxphp', new LanguageDirectoryReader($fileNamePatterns));
 
-        $languageDirectory = self::getLanguageDirectories($paths, $locale);
-        self::$sfTranslator->addResource('oxphp', $languageDirectory, $locale);
+        self::addResource($locale, $paths, self::$domain);
     }
 
-    /**
-     * @param string $string
-     *
-     * @return string
-     */
-    public static function translate(string $string)
+    public static function translate(string $string): string
     {
-        return self::$sfTranslator->trans($string);
+        return self::$sfTranslator->trans(id: $string, domain: self::$domain);
     }
 
-    /**
-     * Returns language map array
-     *
-     * @param array  $paths
-     * @param string $language Language index
-     *
-     * @return array
-     */
-    private static function getLanguageDirectories(array $paths, string $language)
+    public static function addResource(string $locale, array $paths, string $domain): void
     {
-        $languageDirectories = [];
+        self::$sfTranslator->addResource(
+            'oxphp',
+            self::getLanguageDirectories($paths, $locale),
+            $locale,
+            $domain
+        );
+    }
 
-        foreach ($paths as $path) {
-            $languageDirectories[] = $path . $language;
-        }
+    public static function switchTranslationDomain(string $domain): void
+    {
+        self::$domain = $domain;
+    }
 
-        return $languageDirectories;
+    private static function getLanguageDirectories(array $paths, string $language): array
+    {
+        array_walk($paths, static function (&$v) use ($language) {
+            $v .= $language;
+        });
+
+        return $paths;
     }
 }
