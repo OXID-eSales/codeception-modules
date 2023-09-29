@@ -6,6 +6,9 @@ use Codeception\InitTemplate;
 use Codeception\Util\Template;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @deprecated Codeception\Template will be removed in v4.0
+ */
 class ModuleAcceptance extends InitTemplate
 {
     const DIRECTORY_OUTPUT = '_output';
