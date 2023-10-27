@@ -30,9 +30,7 @@ modules:
       depends: Db
     - \OxidEsales\Codeception\Module\Translation\TranslationsModule:
       shop_path: '%SHOP_SOURCE_PATH%'
-      paths: 'Application/views/flow'
-    - \OxidEsales\Codeception\Module\FlowTheme:
-        depends: \OxidEsales\Codeception\Module\Database
+      paths: 'Application/views/theme-id'
 ```
 
 After adding to the suite configuration, rebuild the codeception 
