@@ -30,7 +30,7 @@ class TranslationsModule extends Module
 
         $this->resetTranslationPaths();
         if ($this->config['paths']) {
-            $this->appendTranslationPaths($this->config['paths']);
+            $this->appendTranslationPaths((array)$this->config['paths']);
         }
         Translator::initialize(
             $this->getCurrentLocale(),
@@ -39,7 +39,7 @@ class TranslationsModule extends Module
         );
         if (isset($this->config['paths_admin'])) {
             $this->resetTranslationPaths();
-            $this->appendTranslationPaths($this->config['paths_admin']);
+            $this->appendTranslationPaths((array)$this->config['paths_admin']);
             Translator::addResource(
                 $this->getCurrentLocale(),
                 $this->getLanguageDirectoryPaths(),
