@@ -30,7 +30,7 @@ class TranslationsModule extends Module
 
         $this->resetTranslationPaths();
         if ($this->config['paths']) {
-            $this->appendTranslationPaths((array)$this->config['paths']);
+            $this->appendTranslationPaths($this->config['paths']);
         }
         Translator::initialize(
             $this->getCurrentLocale(),
@@ -39,7 +39,7 @@ class TranslationsModule extends Module
         );
         if (isset($this->config['paths_admin'])) {
             $this->resetTranslationPaths();
-            $this->appendTranslationPaths((array)$this->config['paths_admin']);
+            $this->appendTranslationPaths($this->config['paths_admin']);
             Translator::addResource(
                 $this->getCurrentLocale(),
                 $this->getLanguageDirectoryPaths(),
@@ -62,7 +62,11 @@ class TranslationsModule extends Module
         $this->translationPaths = ['Application/translations'];
     }
 
-    private function appendTranslationPaths(array $paths): void
+    /**
+     * @deprecated CSV string paths will not be supported in the next major.
+     * Use native YAML array notation to configure translation paths.
+     */
+    private function appendTranslationPaths(array|string $paths): void
     {
         $this->translationPaths = array_merge(
             $this->translationPaths,
