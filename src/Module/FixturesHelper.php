@@ -13,11 +13,6 @@ use Codeception\Util\Fixtures;
 
 class FixturesHelper
 {
-    /**
-     * Loads fixture data.
-     *
-     * @param string $fixtureFilePath
-     */
     public function loadRuntimeFixtures(string $fixtureFilePath)
     {
         $fixtures = require($fixtureFilePath);

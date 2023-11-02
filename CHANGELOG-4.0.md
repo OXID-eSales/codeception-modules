@@ -4,6 +4,7 @@
 
 ### Added
 -  Translator can be configured to use multiple translation domains
+- `Email` module based on Mailpit
 
 ### Removed
 - Example configuration in `Codeception\Template`
