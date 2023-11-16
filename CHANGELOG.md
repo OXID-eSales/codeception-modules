@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v3.2.0] - Unreleased
+## [v3.2.0] - 2023-11-16
 
 ### Added
 - Modules:
@@ -118,6 +118,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First version of the module introduced
 
+[v3.2.0]: https://github.com/OXID-eSales/codeception-modules/compare/v3.1.0...v3.2.0
 [v3.1.0]: https://github.com/OXID-eSales/codeception-modules/compare/v3.0.0...v3.1.0
 [v3.0.0]: https://github.com/OXID-eSales/codeception-modules/compare/v2.0.0...v3.0.0
 [v2.0.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.6.0...v2.0.0
