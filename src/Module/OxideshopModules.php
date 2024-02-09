@@ -31,8 +31,32 @@ class OxideshopModules extends Module
 
     public function _before(TestInterface $test): void
     {
-        $this->debug('Activate Modules');
-        $this->activateModules();
+        $activateModules = $this->_getConfig('activate_before_test');
+        if (in_array($activateModules, [true, null])) {
+            $this->activateModules();
+        }
+    }
+
+    public function _after(TestInterface $test): void
+    {
+        if ($this->_getConfig('deactivate_after_test') == true) {
+            $this->deactivateModules();
+        }
+    }
+
+    public function _beforeSuite(array $settings = [])
+    {
+        if ($this->_getConfig('activate_before_suite') == true) {
+            $this->activateModules();
+        }
+        parent::_beforeSuite($settings);
+    }
+
+    public function _afterSuite()
+    {
+        if ($this->_getConfig('deactivate_after_suite') == true) {
+            $this->deactivateModules();
+        }
     }
 
     public function installModule(string $modulePath): void
@@ -57,10 +81,21 @@ class OxideshopModules extends Module
 
     public function activateModules(): void
     {
+        $this->debug('Activate Modules');
         $modulesToActivate = $this->getModuleIds();
 
         foreach ($modulesToActivate as $moduleId) {
             $this->activateModule($moduleId);
+        }
+    }
+
+    public function deactivateModules(): void
+    {
+        $this->debug('Deactivate Modules');
+        $modulesToDeactivate = $this->getModuleIds();
+
+        foreach ($modulesToDeactivate as $moduleId) {
+            $this->deactivateModule($moduleId);
         }
     }
 
