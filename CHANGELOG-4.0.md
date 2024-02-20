@@ -5,6 +5,7 @@
 ### Added
 -  Translator can be configured to use multiple translation domains
 - `Email` module based on Mailpit
+- Functionality for copying fixtures into `source/out` directory
 
 ### Removed
 - Example configuration in `Codeception\Template`
