@@ -1,5 +1,10 @@
 # Change Log for OXID eShop Codeception Modules
 
+## v4.1.0 - unreleased
+
+### Added
+- Functionality for copying fixtures into `source/out` directory
+
 ## v4.0.0 - 2024-04-03
 
 ### Added

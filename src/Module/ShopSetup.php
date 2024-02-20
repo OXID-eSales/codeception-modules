@@ -16,20 +16,20 @@ use OxidEsales\Facts\Config\ConfigFile;
 use OxidEsales\Facts\Facts;
 use Symfony\Component\Filesystem\Filesystem;
 
+use function dirname;
+
 class ShopSetup extends Module
 {
     use CommandTrait;
 
     private Facts $facts;
 
-    /**
-     * @var array
-     */
     protected array $config = [
         'dump' => '',
         'fixtures' => '',
-        'license' => ''
-        ];
+        'license' => '',
+        'out_directory_fixtures' => '',
+    ];
 
     public function _beforeSuite($settings = array())
     {
@@ -38,6 +38,7 @@ class ShopSetup extends Module
         $this->addLicenseKey();
         $this->importSqlFile($this->facts->getDatabaseName(), $this->getFixturesSqlFile());
         $this->createSqlDump($this->facts->getDatabaseName(), $this->getDumpFilePath());
+        $this->copyOutDirectoryFixtures();
     }
 
     private function setupShopDatabase(): void
@@ -77,7 +78,7 @@ class ShopSetup extends Module
     {
         $command = 'mysqldump --defaults-file="$file" --default-character-set=utf8 --complete-insert "$name" > $dump';
         $parameter = [
-            'file' => $this->getMysqlConfigPath() ,
+            'file' => $this->getMysqlConfigPath(),
             'name' => $databaseName,
             'dump' => $dumpFile
         ];
@@ -93,7 +94,7 @@ class ShopSetup extends Module
     {
         $command = 'mysql --defaults-file="$file" --default-character-set=utf8 "$name" < $sql';
         $parameter = [
-            'file' => $this->getMysqlConfigPath() ,
+            'file' => $this->getMysqlConfigPath(),
             'name' => $databaseName,
             'sql' => $sqlFile
         ];
@@ -128,5 +129,24 @@ class ShopSetup extends Module
             $fileSystem->mkdir($pathDir);
         }
         return $shopDumpFile;
+    }
+
+    private function copyOutDirectoryFixtures(): void
+    {
+        $outDirectoryFixtures = $this->config['out_directory_fixtures'];
+        $filesystem = new Filesystem();
+        if (empty($outDirectoryFixtures)) {
+            return;
+        }
+        if ($filesystem->exists($outDirectoryFixtures)) {
+            $filesystem->mirror(
+                $outDirectoryFixtures,
+                (new Facts())->getOutPath()
+            );
+        } else {
+            $this->debug(
+                "Invalid configuration: 'out_directory_fixtures': '$outDirectoryFixtures' - directory does not exist!"
+            );
+        }
     }
 }
