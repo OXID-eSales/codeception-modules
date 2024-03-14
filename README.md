@@ -10,11 +10,6 @@ This component is installable via composer:
 composer require --dev oxid-esales/codeception-modules
 ```
 
-## Requirements
-
-* b-7.0.x branch is compatible with OXID eShop compilation 7.0.x
-* b-6.5.x branch is compatible with OXID eShop compilation 6.5.x
-
 ## Usage
   
 You can use modules from this package as any other codeception module, 
