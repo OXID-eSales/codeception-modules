@@ -10,9 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\Codeception\Module;
 
 use Codeception\Module;
-use OxidEsales\Codeception\Module\Database\DatabaseDefaultsFileGenerator;
 use OxidEsales\Codeception\Module\Exception\FixtureFileNotFoundException;
-use OxidEsales\Facts\Config\ConfigFile;
 use OxidEsales\Facts\Facts;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -22,36 +20,29 @@ class ShopSetup extends Module
 {
     use CommandTrait;
 
-    private Facts $facts;
-
     protected array $config = [
         'dump' => '',
         'fixtures' => '',
+        'mysql_config' => '',
+        'db_name' => '',
         'license' => '',
         'out_directory_fixtures' => '',
     ];
 
-    public function _beforeSuite($settings = array())
+    public function _beforeSuite($settings = []): void
     {
-        $this->facts = new Facts();
-        $this->setupShopDatabase();
+        $this->createEmptyDatabase();
         $this->addLicenseKey();
-        $this->importSqlFile($this->facts->getDatabaseName(), $this->getFixturesSqlFile());
-        $this->createSqlDump($this->facts->getDatabaseName(), $this->getDumpFilePath());
-        $this->copyOutDirectoryFixtures();
+        $this->loadDatabaseFixtures();
+        $this->dumpDatabaseToFile();
+
+        $this->copyFileFixturesIntoShopsOutDirectory();
     }
 
-    private function setupShopDatabase(): void
+    private function createEmptyDatabase(): void
     {
         $this->debug('Setup shop database');
-        $command = ' oe:database:reset' .
-            ' --db-host=' . $this->facts->getDatabaseHost() .
-            ' --db-port=' . $this->facts->getDatabasePort() .
-            ' --db-name=' . $this->facts->getDatabaseName() .
-            ' --db-user=' . $this->facts->getDatabaseUserName() .
-            ' --db-password=' . $this->facts->getDatabasePassword() .
-            ' --force';
-        $this->debug($this->processConsoleCommand($command));
+        $this->debug($this->processConsoleCommand(' oe:database:reset --force'));
     }
 
     private function addLicenseKey(): void
@@ -62,47 +53,14 @@ class ShopSetup extends Module
         }
     }
 
-    private function createSqlDump(string $databaseName, string $dumpFile): void
+    private function loadDatabaseFixtures(): void
     {
-        $this->debug('Create mysqldump file: ' . $dumpFile);
-        $this->debug($this->processMysqldumpCommand($databaseName, $dumpFile));
-    }
-
-    private function importSqlFile(string $databaseName, string $sqlFile): void
-    {
-        $this->debug('Import mysql file: ' . $sqlFile);
-        $this->debug($this->processMysqlCommand($databaseName, $sqlFile));
-    }
-
-    private function processMysqldumpCommand(string $databaseName, string $dumpFile): string
-    {
-        $command = 'mysqldump --defaults-file="$file" --default-character-set=utf8 --complete-insert "$name" > $dump';
-        $parameter = [
-            'file' => $this->getMysqlConfigPath(),
-            'name' => $databaseName,
-            'dump' => $dumpFile
-        ];
-        return $this->processCommand($command, $parameter);
-    }
-
-    private function getMysqlConfigPath(): string
-    {
-        return (new DatabaseDefaultsFileGenerator(new ConfigFile()))->generate();
-    }
-
-    private function processMysqlCommand(string $databaseName, string $sqlFile): string
-    {
-        $command = 'mysql --defaults-file="$file" --default-character-set=utf8 "$name" < $sql';
-        $parameter = [
-            'file' => $this->getMysqlConfigPath(),
-            'name' => $databaseName,
-            'sql' => $sqlFile
-        ];
-        return $this->processCommand($command, $parameter);
+        $testFixturesSql = $this->getFixturesSqlFile();
+        $this->debug("Import MySQL file: $testFixturesSql");
+        $this->debug($this->loadDump($testFixturesSql));
     }
 
     /**
-     * @return string
      * @throws FixtureFileNotFoundException
      */
     private function getFixturesSqlFile(): string
@@ -116,10 +74,26 @@ class ShopSetup extends Module
         return $sqlFilePath;
     }
 
-    /**
-     * @return string
-     */
-    private function getDumpFilePath(): string
+    private function loadDump(string $dumpFile): string
+    {
+        return $this->processCommand(
+            'mysql --defaults-file="$optionFile" --default-character-set=utf8 "$name" < $dump',
+            [
+                'optionFile' => $this->config['mysql_config'],
+                'name' => $this->config['db_name'],
+                'dump' => $dumpFile
+            ]
+        );
+    }
+
+    private function dumpDatabaseToFile(): void
+    {
+        $dumpPath = $this->getPathForDatabaseDump();
+        $this->debug("Create MySQL dump file: $dumpPath");
+        $this->debug($this->dump($dumpPath));
+    }
+
+    private function getPathForDatabaseDump(): string
     {
         $shopDumpFile = $this->config['dump'];
         $pathDir = dirname($shopDumpFile);
@@ -131,7 +105,19 @@ class ShopSetup extends Module
         return $shopDumpFile;
     }
 
-    private function copyOutDirectoryFixtures(): void
+    private function dump(string $dumpFile): string
+    {
+        return $this->processCommand(
+            'mysqldump --defaults-file="$optionFile" --default-character-set=utf8 --complete-insert "$name" > $dump',
+            [
+                'optionFile' => $this->config['mysql_config'],
+                'name' => $this->config['db_name'],
+                'dump' => $dumpFile
+            ]
+        );
+    }
+
+    private function copyFileFixturesIntoShopsOutDirectory(): void
     {
         $outDirectoryFixtures = $this->config['out_directory_fixtures'];
         $filesystem = new Filesystem();
