@@ -10,23 +10,23 @@ declare(strict_types=1);
 namespace OxidEsales\Codeception\Module;
 
 use Codeception\Lib\Interfaces\DependsOnModule;
+use Codeception\Module;
 use Codeception\Module\Db;
+use PDOStatement;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 
-class Database extends \Codeception\Module implements DependsOnModule
+use function sys_get_temp_dir;
+
+class Database extends Module implements DependsOnModule
 {
-    /**
-     * @var Db
-     */
-    private $database;
+    private Db $database;
 
     public function _depends(): array
     {
         return [Db::class => 'Codeception\Module\Db is required'];
     }
 
-    /**
-     * @param Db $database
-     */
     public function _inject(Db $database)
     {
         $this->database = $database;
@@ -36,8 +36,8 @@ class Database extends \Codeception\Module implements DependsOnModule
      * Delete entries from $table where $criteria conditions
      * Use: $I->deleteFromDatabase('users', ['id' => '111111', 'banned' => 'yes']);
      *
-     * @param string $table    The name of table.
-     * @param array  $criteria The conditions. See seeInDatabase() method.
+     * @param string $table The name of table.
+     * @param array $criteria The conditions. See seeInDatabase() method.
      */
     public function deleteFromDatabase(string $table, array $criteria)
     {
@@ -77,7 +77,7 @@ class Database extends \Codeception\Module implements DependsOnModule
         string $type = 'bool',
         int $shopId = 1
     ) {
-        /** @var \Codeception\Module\Db $dbModule */
+        /** @var Db $dbModule */
         $recordsCount = $this->database->grabNumRecords(
             'oxconfig',
             [
@@ -101,7 +101,6 @@ class Database extends \Codeception\Module implements DependsOnModule
                     oxvartype=:type
                 where oxvarname=:name 
                   and oxshopid=:shopId";
-
         } else {
             $query = "insert into oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue)
                        values(:oxid, :shopId, :name, :type, :value)";
@@ -115,9 +114,9 @@ class Database extends \Codeception\Module implements DependsOnModule
     /**
      * select a value from config table.
      *
-     * @param string $name  The name of config parameter.
-     * @param int $shopId  The shopId of config parameter.
-     * @param string $module  The module of config parameter.
+     * @param string $name The name of config parameter.
+     * @param int $shopId The shopId of config parameter.
+     * @param string $module The module of config parameter.
      *
      * @return mixed Returns array[value, type] or false
      */
@@ -128,7 +127,7 @@ class Database extends \Codeception\Module implements DependsOnModule
 
         $parameters = [
             'shopId' => $shopId,
-            'name'   => $name,
+            'name' => $name,
             'module' => $module
         ];
 
@@ -139,8 +138,29 @@ class Database extends \Codeception\Module implements DependsOnModule
         return $queryResult->fetch();
     }
 
-    public function executeQuery($query, array $params): \PDOStatement
+    public function executeQuery($query, array $params): PDOStatement
     {
         return $this->database->_getDriver()->executeQuery($query, $params);
+    }
+
+    public static function generateStartupOptionsFile(
+        string $user,
+        string $pass,
+        string $host,
+        int $port,
+    ): string {
+        $pathToOptionFile = Path::join(
+            sys_get_temp_dir(),
+            uniqid('testing_codeception_', true) . '.cnf'
+        );
+        $fileContents = "[client]"
+            . "\nuser=$user"
+            . "\npassword=$pass"
+            . "\nhost=$host"
+            . "\nport=$port"
+            . "\n";
+        (new Filesystem())->dumpFile($pathToOptionFile, $fileContents);
+
+        return $pathToOptionFile;
     }
 }
