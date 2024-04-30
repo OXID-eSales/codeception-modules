@@ -5,10 +5,12 @@
 ### Added
 - Functionality for copying fixtures into `source/out` directory
 
-## v4.0.1 - Unreleased
-
 ### Changed
 - Raised timeout for running process from commandline
+
+### Deprecated
+- `ShopSetup` module's configuration will be extended with new parameters in v5.0
+- `DatabaseDefaultsFileGenerator::generate()` logic will be moved into `Database` module
 
 ## v4.0.0 - 2024-04-03
 

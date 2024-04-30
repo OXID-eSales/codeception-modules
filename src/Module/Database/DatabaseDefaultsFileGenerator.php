@@ -11,6 +11,9 @@ namespace OxidEsales\Codeception\Module\Database;
 use OxidEsales\Facts\Config\ConfigFile;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @deprecated will be removed in next major
+ */
 class DatabaseDefaultsFileGenerator
 {
     /**
