@@ -52,7 +52,15 @@ class ShopSetup extends Module
             ' --force';
         $this->debug($command);
         $this->debug($this->getConsolePath());
-        $this->debug($this->processConsoleCommand($command));
+        $this->debug('start ' . microtime(true));
+        try {
+            $this->processConsoleCommand($command);
+        } catch (\Exception $e) {
+            var_dump(get_class($e));
+            var_dump($e->getMessage());
+            $this->debug('failed ' . microtime(true));
+        }
+
     }
 
     private function addLicenseKey(): void
