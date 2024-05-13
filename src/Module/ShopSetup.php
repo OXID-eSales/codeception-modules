@@ -50,6 +50,8 @@ class ShopSetup extends Module
             ' --db-user=' . $this->facts->getDatabaseUserName() .
             ' --db-password=' . $this->facts->getDatabasePassword() .
             ' --force';
+        $this->debug($command);
+        $this->debug($this->getConsolePath());
         $this->debug($this->processConsoleCommand($command));
     }
 
