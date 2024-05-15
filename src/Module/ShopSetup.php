@@ -50,17 +50,7 @@ class ShopSetup extends Module
             ' --db-user=' . $this->facts->getDatabaseUserName() .
             ' --db-password=' . $this->facts->getDatabasePassword() .
             ' --force';
-        $this->debug($command);
-        $this->debug($this->getConsolePath());
-        $this->debug('start ' . microtime(true));
-        try {
-            $this->processConsoleCommand($command);
-        } catch (\Exception $e) {
-            var_dump(get_class($e));
-            var_dump($e->getMessage());
-            $this->debug('failed ' . microtime(true));
-        }
-
+        $this->debug($this->processConsoleCommand($command));
     }
 
     private function addLicenseKey(): void
