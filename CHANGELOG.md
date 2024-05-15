@@ -1,10 +1,11 @@
 # Change Log for OXID eShop Codeception Modules
 
-All notable changes to this project will be documented in this file.
-The format is based on [Keep a Changelog](http://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](http://semver.org/).
+## v3.2.1 - Unreleased
 
-## [v3.2.0] - 2023-11-16
+### Changed
+- Raised timeout for running process from commandline
+
+## v3.2.0 - 2023-11-16
 
 ### Added
 - Modules:
@@ -12,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Methods:
   - `Database::executeQuery()`
 
-## [v3.1.0] - 2023-04-20
+## v3.1.0 - 2023-04-20
 
 ### Added
 - Methods:
@@ -26,7 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - Dependency to `webmozart/path-util`
 
-## [v3.0.0] - 2022-10-28
+## v3.0.0 - 2022-10-28
 
 ### Changed
 - Updated Symfony components to v6
@@ -38,7 +39,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - CommandTrait
 - DatabaseDefaultsFileGenerator class
 
-## [v2.0.0] - 2021-07-06
+## v2.0.0 - 2021-07-06
 
 ### Added
 - Added `codeception/module-filesystem` in `composer.json` file
@@ -51,12 +52,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Public method signatures in `Module\OxideshopModules`
 
-## [v1.7.0] - unreleased
+## v1.7.0 - unreleased
 
 ### Added
 - SelectTheme module
 
-## [v1.6.0] - 2021-07-06
+## v1.6.0 - 2021-07-06
 
 ### Added
 - Support array as translation directories list
@@ -64,12 +65,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - InvalidResourceException is thrown if not existing translations directory is listed
 
-## [v1.5.0] - 2021-03-25
+## v1.5.0 - 2021-03-25
 
 ### Added
 - Support of codeception v4
 
-## [v1.4.0] - 2020-11-10
+## v1.4.0 - 2020-11-10
 
 ### Added
 - Add `shopId` parameter to `updateConfigInDatabase` method
@@ -79,7 +80,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     - `OxidEsales\Codeception\Module\Database::grabConfigValueFromDatabase`
     - `OxidEsales\Codeception\Module\Oxideshop::regenerateDatabaseViews`
 
-## [v1.3.0] - 2020-07-06
+## v1.3.0 - 2020-07-06
 
 ### Added
 - Flow theme module
@@ -89,7 +90,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Deprecated
 - Activate modules within oxideshop
 
-## [v1.2.0] - 2020-01-02
+## v1.2.0 - 2020-01-02
 
 ### Added
 - Use declare(strict_types=1); in template files
@@ -103,7 +104,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     - config_key from ``src/Codeception/Template/ModuleAcceptance/acceptance.suite.yml``
     - protected requiredFields in ``src/Module/Database.php``
 
-## [v1.1.0] -  2019-11-07
+## v1.1.0 -  2019-11-07
 
 ### Added
 - Template for module tests initialization is added
@@ -113,20 +114,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fix
 - Improved the waitForAjax method jQuery waiting condition to work with shortened and full jQuery calls
 
-## [v1.0.0] -  2019-07-26
+## v1.0.0 -  2019-07-26
 
 ### Added
 - First version of the module introduced
-
-[v3.2.0]: https://github.com/OXID-eSales/codeception-modules/compare/v3.1.0...v3.2.0
-[v3.1.0]: https://github.com/OXID-eSales/codeception-modules/compare/v3.0.0...v3.1.0
-[v3.0.0]: https://github.com/OXID-eSales/codeception-modules/compare/v2.0.0...v3.0.0
-[v2.0.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.6.0...v2.0.0
-[v1.7.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.6.0...b-6.3.x
-[v1.6.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.5.0...v1.6.0
-[v1.5.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.4.0...v1.5.0
-[v1.4.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.3.0...v1.4.0
-[v1.3.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.2.0...v1.3.0
-[v1.2.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.1.0...v1.2.0
-[v1.1.0]: https://github.com/OXID-eSales/codeception-modules/compare/v1.0.0...v1.1.0
-[v1.0.0]: https://github.com/OXID-eSales/codeception-modules/releases/tag/v1.0.0
