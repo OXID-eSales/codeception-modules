@@ -17,6 +17,7 @@ trait CommandTrait
     public function processCommand(string $command, array $parameter): string
     {
         $process = Process::fromShellCommandline($command);
+        $process->setTimeout(600);
         $process->run(null, $parameter);
         return $process->getOutput();
     }
