@@ -20,6 +20,7 @@ use OxidEsales\Facts\Facts;
 
 class Oxideshop extends Module implements DependsOnModule
 {
+    use CachingTrait;
     use CommandTrait;
 
     private WebDriver $webDriver;
@@ -46,6 +47,7 @@ class Oxideshop extends Module implements DependsOnModule
     {
         Context::resetActiveUser();
         $this->clearShopCache();
+        $this->cleanUpCompilationDirectory();
     }
 
     public function _failed(TestInterface $test, $fail)
