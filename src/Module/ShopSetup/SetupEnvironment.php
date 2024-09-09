@@ -17,7 +17,7 @@ use OxidEsales\Codeception\Module\Database;
 use OxidEsales\Codeception\ShopSetup\DataObject\UserInput;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContext;
 use OxidEsales\EshopCommunity\Setup\Utilities;
-use OxidEsales\Facts\Edition\EditionSelector;
+use OxidEsales\Facts\Facts;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
@@ -102,7 +102,7 @@ class SetupEnvironment extends Module implements DependsOnModule
 
     public function isCommunityEdition(): bool
     {
-        return (new EditionSelector())->isCommunity();
+        return (new Facts())->isCommunity();
     }
 
     public function backupHtaccessFile(): void
