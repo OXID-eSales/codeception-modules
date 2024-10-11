@@ -4,6 +4,7 @@
 
 ### Changed
 - Raised timeout for running process from commandline
+- Configurable module activation and deactivation between tests and suites
 
 ## v3.2.0 - 2023-11-16
 
