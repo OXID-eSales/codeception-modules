@@ -1,6 +1,6 @@
 # Change Log for OXID eShop Codeception Modules
 
-## v3.2.1 - Unreleased
+## v3.2.1 - 2024-10-11
 
 ### Changed
 - Raised timeout for running process from commandline
