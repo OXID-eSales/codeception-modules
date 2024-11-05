@@ -9,7 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\Codeception\Module;
 
-use OxidEsales\Facts\Facts;
+use OxidEsales\EshopCommunity\Internal\Framework\FileSystem\ProjectRootLocator;
+use RuntimeException;
 use Symfony\Component\Process\Process;
 
 trait CommandTrait
@@ -27,20 +28,22 @@ trait CommandTrait
         return $this->processCommand($this->getConsolePath() . ' ' . $command, []);
     }
 
+    public function processVendorBinary(string $binary): string
+    {
+        return $this->processCommand(
+            \sprintf('%s/vendor/bin/%s', (new ProjectRootLocator())->getProjectRoot(), $binary),
+            []
+        );
+    }
+
     private function getConsolePath(): string
     {
-        $rootPath      = (new Facts())->getShopRootPath();
-        $possiblePaths = [
-            '/bin/oe-console',
-            '/vendor/bin/oe-console',
-        ];
-
-        foreach ($possiblePaths as $path) {
+        $rootPath = (new ProjectRootLocator())->getProjectRoot();
+        foreach (['/bin/oe-console', '/vendor/bin/oe-console',] as $path) {
             if (is_file($rootPath . $path)) {
                 return $rootPath . $path;
             }
         }
-
-        throw new \Exception('error: console not found');
+        throw new RuntimeException('error: console not found');
     }
 }

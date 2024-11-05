@@ -16,7 +16,6 @@ use Codeception\Module\WebDriver;
 use Codeception\TestInterface;
 use Facebook\WebDriver\Exception\ElementNotVisibleException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
-use OxidEsales\Facts\Facts;
 
 class Oxideshop extends Module implements DependsOnModule
 {
@@ -63,12 +62,7 @@ class Oxideshop extends Module implements DependsOnModule
     public function clearShopCache(): void
     {
         $this->webDriver->_restart();
-
-        $facts = new Facts();
-        exec(
-            $facts->getCommunityEditionRootPath() .
-            '/bin/oe-console oe:cache:clear'
-        );
+        $this->processConsoleCommand('oe:cache:clear');
     }
 
     public function cleanUp(): void
@@ -136,6 +130,6 @@ class Oxideshop extends Module implements DependsOnModule
 
     public function regenerateDatabaseViews(): void
     {
-        $this->processCommand((new Facts())->getVendorPath() . '/bin/oe-eshop-db_views_generate', []);
+        $this->processVendorBinary('oe-eshop-db_views_generate');
     }
 }

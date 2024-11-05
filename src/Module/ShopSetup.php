@@ -11,7 +11,6 @@ namespace OxidEsales\Codeception\Module;
 
 use Codeception\Module;
 use OxidEsales\Codeception\Module\Exception\FixtureFileNotFoundException;
-use OxidEsales\Facts\Facts;
 use Symfony\Component\Filesystem\Filesystem;
 
 use function dirname;
@@ -26,6 +25,7 @@ class ShopSetup extends Module
         'mysql_config' => '',
         'db_name' => '',
         'license' => '',
+        'out_directory' => '',
         'out_directory_fixtures' => '',
     ];
 
@@ -120,14 +120,14 @@ class ShopSetup extends Module
     private function copyFileFixturesIntoShopsOutDirectory(): void
     {
         $outDirectoryFixtures = $this->config['out_directory_fixtures'];
-        $filesystem = new Filesystem();
         if (empty($outDirectoryFixtures)) {
             return;
         }
+        $filesystem = new Filesystem();
         if ($filesystem->exists($outDirectoryFixtures)) {
             $filesystem->mirror(
                 $outDirectoryFixtures,
-                (new Facts())->getOutPath()
+                $this->config['out_directory']
             );
         } else {
             $this->debug(

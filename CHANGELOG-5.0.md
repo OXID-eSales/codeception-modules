@@ -12,3 +12,6 @@
 
 ### Fixed
 - Category file cache is not cleared on `Oxideshop` module start
+
+### Removed
+- Dependency on `Facts` component
