@@ -21,6 +21,9 @@ use OxidEsales\Facts\Edition\EditionSelector;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
+/**
+ * @deprecated functionality for testing browser-based shop setup will be removed in next major
+ */
 class SetupEnvironment extends Module implements DependsOnModule
 {
     use CommandTrait;
