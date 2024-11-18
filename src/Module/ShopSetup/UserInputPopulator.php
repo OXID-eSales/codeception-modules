@@ -11,6 +11,9 @@ namespace OxidEsales\Codeception\Module\ShopSetup;
 
 use OxidEsales\Codeception\ShopSetup\DataObject\UserInput;
 
+/**
+ * @deprecated functionality for testing browser-based shop setup will be removed in next major
+ */
 class UserInputPopulator
 {
     public function __construct(private array $config)
