@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 namespace OxidEsales\Codeception\Module;
 
+use Codeception\Exception\ElementNotFound;
+use Codeception\Exception\MalformedLocatorException;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 use Codeception\Module\Db;
 use Codeception\Module\WebDriver;
 use Codeception\TestInterface;
-use Facebook\WebDriver\Exception\ElementNotVisibleException;
-use Facebook\WebDriver\Exception\NoSuchElementException;
 
 class Oxideshop extends Module implements DependsOnModule
 {
@@ -26,7 +26,10 @@ class Oxideshop extends Module implements DependsOnModule
 
     private Db $database;
 
-    protected array $config = ['screen_shot_url' => ''];
+    protected array $config = [
+        'screen_shot_url' => '',
+        'page_load_timeout' => 0.25,
+    ];
 
     public function _depends(): array
     {
@@ -36,25 +39,25 @@ class Oxideshop extends Module implements DependsOnModule
         ];
     }
 
-    public function _inject(WebDriver $driver, Db $database)
+    public function _inject(WebDriver $driver, Db $database): void
     {
         $this->webDriver = $driver;
         $this->database = $database;
     }
 
-    public function _before(TestInterface $test)
+    public function _before(TestInterface $test): void
     {
         Context::resetActiveUser();
         $this->clearShopCache();
         $this->cleanUpCompilationDirectory();
     }
 
-    public function _failed(TestInterface $test, $fail)
+    public function _failed(TestInterface $test, $fail): void
     {
         $report = $test->getMetadata()->getReports();
         if (isset($report['png']) && $this->config['screen_shot_url']) {
             $fileName = basename($report['png']);
-            $fullUrl = rtrim($this->config['screen_shot_url'],'/') . '/' . $fileName;
+            $fullUrl = rtrim($this->config['screen_shot_url'], '/') . '/' . $fileName;
             $test->getMetadata()->addReport('png', $fullUrl);
         }
     }
@@ -67,16 +70,9 @@ class Oxideshop extends Module implements DependsOnModule
 
     public function cleanUp(): void
     {
-        $this->database->_beforeSuite([]);
+        $this->database->_beforeSuite();
     }
 
-    /**
-     * Removes \n signs and it leading spaces from string. Keeps only single space in the ends of each row.
-     *
-     * @param string $line Not formatted string (with spaces and \n signs).
-     *
-     * @return string Formatted string with single spaces and no \n signs.
-     */
     public function clearString(string $line): string
     {
         return trim(preg_replace("/[ \t\r\n]+/", ' ', $line));
@@ -85,47 +81,119 @@ class Oxideshop extends Module implements DependsOnModule
     /**
      * @deprecated method will be removed in next major
      */
-    public function waitForAjax(int $timeout = 60): void
+    public function addFetchListener(): string
     {
-        //$this->webDriver->waitForJS('return !window.jQuery || window.jQuery.active == 0;', $timeout);
-        $this->webDriver->wait(1);
+        $eventId = 'fetch_event_' . md5(uniqid(more_entropy: true));
+        $this->webDriver->executeJs(
+            "
+window.$eventId = false;
+
+// listen to fetch() calls
+window.fetch = new Proxy(window.fetch, {
+    apply(fetch, that, args) {
+        const proxy = Reflect.apply(fetch, that, args);
+        proxy.then(() => {
+            window.$eventId = true;
+        });
+
+        return proxy;
+    }
+});
+                "
+        );
+
+        return $eventId;
+    }
+
+    public function waitForFetchDone(string $eventId): void
+    {
+        $this->webDriver->waitForJS("return window.$eventId === true");
+    }
+
+    public function addAjaxListener(): string
+    {
+        $eventId = 'ajax_event_' . md5(uniqid(more_entropy: true));
+        $this->webDriver->executeJs(
+            "
+window.$eventId = false;
+
+// listen to XMLHttpRequest
+window.XMLHttpRequest = new Proxy(window.XMLHttpRequest, {
+    construct(xhr, args, that) {
+        const proxy = Reflect.construct(xhr, args, that);
+        proxy.addEventListener('readystatechange', function () {
+            if (proxy.readyState === proxy.DONE) {
+                window.$eventId = true;
+            }
+        }, false);
+
+        return proxy;
+    }
+});
+                "
+        );
+
+        return $eventId;
+    }
+
+    public function waitForAjaxDone(string $eventId): void
+    {
+        $this->webDriver->waitForJS("return window.$eventId === true");
     }
 
     public function waitForPageLoad(int $timeout = 60): void
     {
         $this->waitForDocumentReadyState($timeout);
-        $this->waitForAjax($timeout);
+        $this->webDriver->wait($this->config['page_load_timeout']);
     }
 
     public function waitForDocumentReadyState(int $timeout = 60): void
     {
-        $this->webDriver->waitForJs('return document.readyState == "complete"', $timeout);
+        $this->webDriver->waitForJs('return document.readyState === "complete"', $timeout);
     }
 
-    /**
-     * Check if element exists on currently loaded page
-     */
     public function seePageHasElement($element): bool
     {
         return count($this->getModule('WebDriver')->_findElements($element)) > 0;
     }
 
     /**
-     * @deprecated method will be removed in next major
+     * @see clickWIthLeftButton() - method imitates the similar behaviour
      */
-    public function seeAndClick(string $locator): void
+    public function clickAndWait($link, $context = null): void
     {
-        $elements = $this->webDriver->_findElements($locator);
-        if (!$elements) {
-            throw new NoSuchElementException($locator);
+        try {
+            $this->webDriver->moveMouseOver($context ?? $link);
+        } catch (ElementNotFound | MalformedLocatorException) {
+            /**
+             * $link = 'SOME TEXT PRESENT IN PAGE' and $context = null
+             * Can't center view to the $link (it works only when XPath or CSS selector is available)
+             * Continue with normal click() without scrolling and centering.
+             */
         }
-        foreach ($elements as $el) {
-            if ($el->isDisplayed()) {
-                $el->click();
-                return;
-            }
-        }
-        throw new ElementNotVisibleException($locator);
+        $this->webDriver->click($link, $context);
+        $this->waitForPageLoad();
+    }
+
+    /**
+     * Method uses waitForText() which works only for exact matches
+     * To ignore HTML tags, use $I->see() ($I->see("word1 word2") will match "word1<br/>word2")
+     */
+    public function seeText(string $text, ?string $selector = null): void
+    {
+        $this->webDriver->waitForText(strip_tags($text));
+        $this->webDriver->see($text, $selector);
+    }
+
+    /**
+     * Can be used instead of click() when expecting an alert popup.
+     * Alert is thrown as a JS exception waitForPageLoad() have problem with it
+     */
+    public function openAlert($link, $context = null): void
+    {
+        $this->webDriver->moveMouseOver($link);
+        $this->webDriver->click($link, $context);
+        $this->webDriver->seeInPopup('');
     }
 
     public function regenerateDatabaseViews(): void

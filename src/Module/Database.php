@@ -27,7 +27,7 @@ class Database extends Module implements DependsOnModule
         return [Db::class => 'Codeception\Module\Db is required'];
     }
 
-    public function _inject(Db $database)
+    public function _inject(Db $database): void
     {
         $this->database = $database;
     }

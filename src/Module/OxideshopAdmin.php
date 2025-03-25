@@ -9,148 +9,84 @@ declare(strict_types=1);
 
 namespace OxidEsales\Codeception\Module;
 
-use Codeception\Exception\ElementNotFound;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 use Codeception\Module\WebDriver;
 
 class OxideshopAdmin extends Module implements DependsOnModule
 {
-    /**
-     * Admin interface frame IDs
-     */
     private const FRAME_LIST = 'list';
     private const FRAME_NAVIGATION = 'navigation';
     private const FRAME_BASE = 'basefrm';
     private const FRAME_EDIT = 'edit';
     private const FRAME_HEADER = 'header';
     private const FRAME_ADMINNAV = 'adminnav';
-    private const DYNEXPORT_DO = 'dynexport_do';
-    private const DYNEXPORT_MAIN = 'dynexport_main';
+    private const FRAME_DYNEXPORT_DO = 'dynexport_do';
+    private const FRAME_DYNEXPORT_MAIN = 'dynexport_main';
 
-    /**
-     * Admin interface frame dependency structure. One level supported.
-     *
-     * Frame -> Parent frame
-     */
     private array $frameParents = [
         self::FRAME_ADMINNAV => self::FRAME_NAVIGATION,
         self::FRAME_LIST => self::FRAME_BASE,
         self::FRAME_EDIT => self::FRAME_BASE,
-        self::DYNEXPORT_DO => self::FRAME_BASE,
-        self::DYNEXPORT_MAIN => self::FRAME_BASE,
+        self::FRAME_DYNEXPORT_DO => self::FRAME_BASE,
+        self::FRAME_DYNEXPORT_MAIN => self::FRAME_BASE,
     ];
-
-    private Oxideshop $oxideshop;
-
     private WebDriver $webdriver;
 
     public function _depends(): array
     {
         return [
-            WebDriver::class => 'Codeception\Module\WebDriver is required',
-            Oxideshop::class => 'Codeception\Module\Oxideshop is required'
+            WebDriver::class => WebDriver::class . ' is required',
         ];
     }
 
-    public function _inject(WebDriver $webDriver, Oxideshop $oxideshop)
+    public function _inject(WebDriver $webDriver): void
     {
         $this->webdriver = $webDriver;
-        $this->oxideshop = $oxideshop;
     }
 
-    /**
-     * Select Header frame in Admin panel to be active now
-     */
     public function selectHeaderFrame(): void
     {
-        $this->selectFrameInAdmin(self::FRAME_HEADER);
+        $this->selectFrame(self::FRAME_HEADER);
     }
 
-
-    /**
-     * Select Base frame in Admin panel to be active now
-     */
     public function selectBaseFrame(): void
     {
-        $this->selectFrameInAdmin(self::FRAME_BASE);
+        $this->selectFrame(self::FRAME_BASE);
     }
 
-    /**
-     * Select Edit frame in Admin panel to be active now
-     */
     public function selectEditFrame(): void
     {
-        $this->selectFrameInAdmin(self::FRAME_EDIT);
+        $this->selectFrame(self::FRAME_EDIT);
     }
 
-    /**
-     * Select Navigation frame in Admin panel to be active now
-     */
     public function selectNavigationFrame(): void
     {
-        $this->selectFrameInAdmin(self::FRAME_ADMINNAV);
+        $this->selectFrame(self::FRAME_ADMINNAV);
     }
 
-    /**
-     * Select List frame in Admin panel to be active now
-     */
     public function selectListFrame(): void
     {
-        $this->selectFrameInAdmin(self::FRAME_LIST);
+        $this->selectFrame(self::FRAME_LIST);
     }
 
     public function selectGenericExportStatusFrame(): void
     {
-        $this->selectFrameInAdmin(self::DYNEXPORT_DO);
+        $this->selectFrame(self::FRAME_DYNEXPORT_DO);
     }
 
     public function selectGenericExportMainFrame(): void
     {
-        $this->selectFrameInAdmin(self::DYNEXPORT_MAIN);
+        $this->selectFrame(self::FRAME_DYNEXPORT_MAIN);
     }
 
-    /**
-     * Selects the frame by current OXID eShop admin frame dependency structure
-     *
-     * @param string $desiredFrame
-     */
-    private function selectFrameInAdmin(string $desiredFrame): void
+    private function selectFrame(string $frame): void
     {
-        $desiredParent = $this->frameParents[$desiredFrame] ?? '';
-
-        $this->switchToFrame();
-
-        if ($desiredParent) {
-            $this->webdriver->waitForElement("#{$desiredParent}");
-            $this->switchToFrame($desiredParent);
-            $this->oxideshop->waitForDocumentReadyState();
+        $this->webdriver->switchToFrame();
+        if (isset($this->frameParents[$frame])) {
+            $this->webdriver->switchToFrame($this->frameParents[$frame]);
         }
-
-        $this->webdriver->waitForElement("#{$desiredFrame}");
-        $this->switchToFrame($desiredFrame);
-        $this->oxideshop->waitForDocumentReadyState();
-    }
-
-    /**
-     * Switch to frame
-     *
-     * Method is temporary until webdriver will provide working solution for switching the frames
-     *
-     * @param $elementId
-     */
-    private function switchToFrame($elementId = null): void
-    {
-        if (is_null($elementId)) {
-            $this->webdriver->webDriver->switchTo()->defaultContent();
-            return;
-        }
-
-        $els = $this->webdriver->_findElements("frame[id='{$elementId}']");
-        if (!count($els)) {
-            throw new ElementNotFound($elementId, "Frame was not found by CSS or XPath");
-        }
-
-        $this->webdriver->webDriver->switchTo()->frame($els[0]);
+        $this->webdriver->switchToFrame($frame);
+        $this->webdriver->waitForJS('return window.document.readyState === "complete";');
     }
 }
