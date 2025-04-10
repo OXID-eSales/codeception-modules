@@ -1,6 +1,6 @@
 # Change Log for OXID eShop Codeception Modules
 
-## v4.2.0 - unreleased
+## v4.2.0 - 2025-04-09
 
 ### Deprecated
 - Functionality for testing browser-based shop setup
