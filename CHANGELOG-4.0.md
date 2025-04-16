@@ -5,6 +5,7 @@
 ### Deprecated
 - Functionality for testing browser-based shop setup
 - `DatabaseDefaultsFileGenerator` will be merged with the `Database` module
+- Redundant `seeAndClick()` and `waitForAjax()` methods
 
 ## v4.1.0 - 2024-10-14
 
