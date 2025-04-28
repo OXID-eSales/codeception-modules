@@ -82,6 +82,9 @@ class Oxideshop extends Module implements DependsOnModule
         return trim(preg_replace("/[ \t\r\n]+/", ' ', $line));
     }
 
+    /**
+     * @deprecated method will be removed in next major
+     */
     public function waitForAjax(int $timeout = 60): void
     {
         //$this->webDriver->waitForJS('return !window.jQuery || window.jQuery.active == 0;', $timeout);
@@ -108,10 +111,7 @@ class Oxideshop extends Module implements DependsOnModule
     }
 
     /**
-     * Clicks on first visible element
-     * @param string $locator
-     * @throws ElementNotVisibleException
-     * @throws NoSuchElementException
+     * @deprecated method will be removed in next major
      */
     public function seeAndClick(string $locator): void
     {
