@@ -179,9 +179,9 @@ window.XMLHttpRequest = new Proxy(window.XMLHttpRequest, {
      * Method uses waitForText() which works only for exact matches
      * To ignore HTML tags, use $I->see() ($I->see("word1 word2") will match "word1<br/>word2")
      */
-    public function seeText(string $text, ?string $selector = null): void
+    public function seeText(string $text, ?string $selector = null, int $timeout = 10): void
     {
-        $this->webDriver->waitForText(strip_tags($text));
+        $this->webDriver->waitForText(strip_tags($text), timeout: $timeout);
         $this->webDriver->see($text, $selector);
     }
 
