@@ -107,7 +107,7 @@ window.fetch = new Proxy(window.fetch, {
 
     public function waitForFetchDone(string $eventId): void
     {
-        $this->webDriver->waitForJS("return window.$eventId === true");
+        $this->webDriver->waitForJS(script: "return window.$eventId === true", timeout: 10);
     }
 
     public function addAjaxListener(): string
@@ -138,7 +138,7 @@ window.XMLHttpRequest = new Proxy(window.XMLHttpRequest, {
 
     public function waitForAjaxDone(string $eventId): void
     {
-        $this->webDriver->waitForJS("return window.$eventId === true");
+        $this->webDriver->waitForJS(script: "return window.$eventId === true", timeout: 10);
     }
 
     public function waitForPageLoad(int $timeout = 60): void
