@@ -186,13 +186,14 @@ window.XMLHttpRequest = new Proxy(window.XMLHttpRequest, {
     }
 
     /**
-     * Can be used instead of click() when expecting an alert popup.
-     * Alert is thrown as a JS exception waitForPageLoad() have problem with it
+     * Can be used instead of click() when expecting an alert popup
+     * (alert is implemented as a JS exception, therefore, waitForJs() will fail here)
      */
     public function openAlert($link, $context = null): void
     {
         $this->webDriver->moveMouseOver($link);
         $this->webDriver->click($link, $context);
+        $this->webDriver->wait($this->config['page_load_timeout']);
         $this->webDriver->seeInPopup('');
     }
 
