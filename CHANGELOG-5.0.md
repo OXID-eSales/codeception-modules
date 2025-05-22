@@ -7,6 +7,7 @@
 - Possibility to update project configuration YAMLs
 - Methods to track `AJAX` and `fetch` requests' completion
 - `clickAndWait()` and `seeText()` methods as more stable alternatives for `click()` and `see()`
+- Method to wait for an element's text update
 
 ### Changed
 - `ShopSetup` module accepts DB name and Path to the MySQL option file as parameters

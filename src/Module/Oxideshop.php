@@ -16,6 +16,7 @@ use Codeception\Module;
 use Codeception\Module\Db;
 use Codeception\Module\WebDriver;
 use Codeception\TestInterface;
+use Facebook\WebDriver\WebDriverElement;
 
 class Oxideshop extends Module implements DependsOnModule
 {
@@ -150,6 +151,15 @@ window.XMLHttpRequest = new Proxy(window.XMLHttpRequest, {
     public function waitForDocumentReadyState(int $timeout = 60): void
     {
         $this->webDriver->waitForJs('return document.readyState === "complete"', $timeout);
+    }
+
+    public function waitForTextUpdate(string $element, string $textBefore): void
+    {
+        $this->webDriver->waitForElementChange($element, function (WebDriverElement $element) use ($textBefore) {
+            $text = $element->getText();
+
+            return $text && $text !== $textBefore;
+        });
     }
 
     public function seePageHasElement($element): bool
