@@ -12,7 +12,6 @@
     ],
     "homepage": "https://www.oxid-esales.com/en",
     "require": {
-        "codeception/module-filesystem": "*",
         "koehnlein/codeception-email-mailpit": "<1.0",
         "symfony/translation": "^6.0"
     },
