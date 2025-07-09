@@ -195,6 +195,20 @@ window.XMLHttpRequest = new Proxy(window.XMLHttpRequest, {
         $this->webDriver->see($text, $selector);
     }
 
+    public function seeImage(string $selector): void
+    {
+        $this->webDriver->seeElement($selector);
+        $imageHeight = $this->webDriver
+            ->executeJS(
+                "return document.querySelector('$selector').naturalHeight;"
+            );
+        $this->assertGreaterThan(
+            1,
+            $imageHeight,
+            'The image is not visible.'
+        );
+    }
+
     /**
      * Can be used instead of click() when expecting an alert popup
      * (alert is implemented as a JS exception, therefore, waitForJs() will fail here)

@@ -4,6 +4,7 @@
 
 ### Added
 - Symfony 7.x support
+- Method to check for image visibility
 
 ### Changed
 - `ShopSetup` now requires the `theme_id` configuration field
