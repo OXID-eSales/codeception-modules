@@ -1,5 +1,10 @@
 # Change Log for OXID eShop Codeception Modules
 
+## v5.0.0-alpha.2 - Unreleased
+
+### Added
+- Symfony 7.x support
+
 ## v5.0.0-alpha.1 - 2025-02-03
 
 ### Added
