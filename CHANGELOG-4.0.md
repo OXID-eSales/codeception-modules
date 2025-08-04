@@ -1,5 +1,10 @@
 # Change Log for OXID eShop Codeception Modules
 
+## v4.3.0 - Unreleased
+
+### Changed
+- Functionality from `DatabaseDefaultsFileGenerator` moved into `Database` module
+
 ## v4.2.0 - 2025-04-09
 
 ### Deprecated
