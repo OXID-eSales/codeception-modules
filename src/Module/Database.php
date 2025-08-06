@@ -82,7 +82,7 @@ class Database extends Module implements DependsOnModule
             'oxconfig',
             [
                 'oxvarname' => $name,
-                'oxshopid' => $shopId
+                'oxshopid' => $shopId,
             ]
         );
 
@@ -92,7 +92,7 @@ class Database extends Module implements DependsOnModule
             'name' => $name,
             'value' => $value,
             'type' => $type,
-            'shopId' => $shopId
+            'shopId' => $shopId,
         ];
 
         if ($recordsCount > 0) {
@@ -128,7 +128,7 @@ class Database extends Module implements DependsOnModule
         $parameters = [
             'shopId' => $shopId,
             'name' => $name,
-            'module' => $module
+            'module' => $module,
         ];
 
         $db = $this->database->_getDbh();
