@@ -10,129 +10,136 @@ declare(strict_types=1);
 namespace OxidEsales\Codeception\Module;
 
 use Codeception\Module;
-use OxidEsales\Codeception\Module\Exception\FixtureFileNotFoundException;
+use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
 
 use function dirname;
+use function sprintf;
 
 class ShopSetup extends Module
 {
     use CommandTrait;
 
-    protected array $config = [
-        'dump' => '',
-        'fixtures' => '',
-        'mysql_config' => '',
-        'db_name' => '',
-        'license' => '',
-        'out_directory' => '',
-        'out_directory_fixtures' => '',
-    ];
+    protected array $requiredFields = ['db_name', 'dump', 'fixtures', 'theme_id'];
 
     public function _beforeSuite($settings = []): void
     {
         $this->createEmptyDatabase();
         $this->addLicenseKey();
         $this->loadDatabaseFixtures();
-        $this->dumpDatabaseToFile();
+        $this->activateFrontendTheme();
+        $this->backupDatabaseToTheDumpFile();
 
         $this->copyFileFixturesIntoShopsOutDirectory();
+    }
+
+    protected function validateConfig(): void
+    {
+        parent::validateConfig();
+        if (!(new Filesystem())->exists($this->config['fixtures'])) {
+            throw new InvalidArgumentException(
+                'Fixtures file does not exist'
+            );
+        }
+        if (!empty($this->config['out_directory_fixtures'])) {
+            if (empty($this->config['out_directory'])) {
+                throw new InvalidArgumentException(
+                        'out_directory can not be empty if out_directory_fixtures is set.'
+                );
+            }
+            if (!(new Filesystem())->exists($this->config['out_directory_fixtures'])) {
+                throw new InvalidArgumentException(
+                    'out_directory_fixtures directory does not exist'
+                );
+            }
+        }
     }
 
     private function createEmptyDatabase(): void
     {
         $this->debug('Setup shop database');
-        $this->debug($this->processConsoleCommand(' oe:database:reset --force'));
+        $this->debug(
+                $this->processConsoleCommand(' oe:database:reset --force')
+        );
     }
 
     private function addLicenseKey(): void
     {
-        if ($this->config['license']) {
+        if (!empty($this->config['license'])) {
             $this->debug('Add license key');
-            $this->debug($this->processConsoleCommand(' oe:license:add ' . $this->config['license']));
+            $this->debug(
+                    $this->processConsoleCommand(' oe:license:add ' . $this->config['license'])
+            );
         }
     }
 
     private function loadDatabaseFixtures(): void
     {
-        $testFixturesSql = $this->getFixturesSqlFile();
-        $this->debug("Import MySQL file: $testFixturesSql");
-        $this->debug($this->loadDump($testFixturesSql));
-    }
-
-    /**
-     * @throws FixtureFileNotFoundException
-     */
-    private function getFixturesSqlFile(): string
-    {
-        $sqlFilePath = $this->config['fixtures'];
-        $fileSystem = new Filesystem();
-        if (!$fileSystem->exists($sqlFilePath)) {
-            $this->debug('No fixtures file found');
-            throw new FixtureFileNotFoundException();
-        }
-        return $sqlFilePath;
-    }
-
-    private function loadDump(string $dumpFile): string
-    {
-        return $this->processCommand(
-            'mysql --defaults-file="$optionFile" --default-character-set=utf8 "$name" < $dump',
-            [
-                'optionFile' => $this->config['mysql_config'],
-                'name' => $this->config['db_name'],
-                'dump' => $dumpFile
-            ]
+        $this->debug('Import MySQL file');
+        $this->debug(
+            $this->processCommand(
+                sprintf(
+                    'mysql %s --default-character-set=utf8 "%s" < "%s"',
+                    $this->getDefaultsFileMysqlCommandOption(),
+                    $this->config['db_name'],
+                    $this->config['fixtures']
+                ),
+                []
+            )
         );
     }
 
-    private function dumpDatabaseToFile(): void
+    private function getDefaultsFileMysqlCommandOption(): string
     {
-        $dumpPath = $this->getPathForDatabaseDump();
-        $this->debug("Create MySQL dump file: $dumpPath");
-        $this->debug($this->dump($dumpPath));
+        $mysqlConfigFile = $this->config['mysql_config'] ?? '';
+        return $mysqlConfigFile ? "--defaults-file=\"$mysqlConfigFile\"" : '';
     }
 
-    private function getPathForDatabaseDump(): string
+    private function backupDatabaseToTheDumpFile(): void
     {
-        $shopDumpFile = $this->config['dump'];
-        $pathDir = dirname($shopDumpFile);
+        $this->preparePathForDatabaseDumpFile();
+        $this->debug('Backup DB to dump file');
+        $this->debug(
+            $this->processCommand(
+                sprintf(
+                    'mysqldump %s --default-character-set=utf8 --complete-insert "%s" > "%s"',
+                    $this->getDefaultsFileMysqlCommandOption(),
+                    $this->config['db_name'],
+                    $this->config['dump']
+                ),
+                []
+            )
+        );
+    }
+
+    private function preparePathForDatabaseDumpFile(): void
+    {
+        $pathDir = dirname($this->config['dump']);
         $fileSystem = new Filesystem();
         if (!$fileSystem->exists($pathDir)) {
-            $this->debug('Create dump directory');
+            $this->debug('Create directories for DB dump');
             $fileSystem->mkdir($pathDir);
         }
-        return $shopDumpFile;
-    }
-
-    private function dump(string $dumpFile): string
-    {
-        return $this->processCommand(
-            'mysqldump --defaults-file="$optionFile" --default-character-set=utf8 --complete-insert "$name" > $dump',
-            [
-                'optionFile' => $this->config['mysql_config'],
-                'name' => $this->config['db_name'],
-                'dump' => $dumpFile
-            ]
-        );
     }
 
     private function copyFileFixturesIntoShopsOutDirectory(): void
     {
-        $outDirectoryFixtures = $this->config['out_directory_fixtures'];
-        if (empty($outDirectoryFixtures)) {
-            return;
+        if (!empty($this->config['out_directory_fixtures'])) {
+            $this->debug('Copy file fixtures into shops out directory');
+            (new Filesystem())->mirror(
+                    $this->config['out_directory_fixtures'],
+                    $this->config['out_directory'] ?? ''
+                );
         }
-        $filesystem = new Filesystem();
-        if ($filesystem->exists($outDirectoryFixtures)) {
-            $filesystem->mirror(
-                $outDirectoryFixtures,
-                $this->config['out_directory']
-            );
-        } else {
-            $this->debug(
-                "Invalid configuration: 'out_directory_fixtures': '$outDirectoryFixtures' - directory does not exist!"
-            );
-        }
+    }
+
+    private function activateFrontendTheme(): void
+    {
+        $this->processConsoleCommand(
+            sprintf(
+                'oe:theme:activate %s',
+                $this->config['theme_id']
+            )
+        );
     }
 }

@@ -5,6 +5,13 @@
 ### Added
 - Symfony 7.x support
 
+### Changed
+- `ShopSetup` now requires the `theme_id` configuration field
+
+### Removed
+- `SelectTheme` module has been removed; theme activation is now managed by the `ShopSetup` module
+- `FixtureFileNotFoundException` has been replaced with `InvalidArgumentException` for missing fixture files
+
 ## v5.0.0-alpha.1 - 2025-02-03
 
 ### Added
