@@ -35,4 +35,9 @@ trait EmailTestTrait
     {
         $this->mailpit->seeInOpenedEmailSender($expected);
     }
+
+    public function grabHtmlBodyFromEmail(): string
+    {
+        return $this->mailpit->grabHtmlBodyFromEmail();
+    }
 }

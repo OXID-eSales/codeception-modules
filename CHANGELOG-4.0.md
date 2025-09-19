@@ -2,6 +2,9 @@
 
 ## v4.3.0 - Unreleased
 
+### Added
+- New method to get email html content
+
 ### Changed
 - Functionality from `DatabaseDefaultsFileGenerator` moved into `Database` module
 
