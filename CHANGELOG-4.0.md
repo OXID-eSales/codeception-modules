@@ -1,6 +1,6 @@
 # Change Log for OXID eShop Codeception Modules
 
-## v4.3.0 - Unreleased
+## v4.3.0 - 2025-10-14
 
 ### Added
 - New method to get email html content
