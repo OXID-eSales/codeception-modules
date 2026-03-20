@@ -14,7 +14,8 @@
   "require": {
     "codeception/module-filesystem": "*",
     "koehnlein/codeception-email-mailpit": "<1.0",
-    "symfony/translation": "^6.0"
+    "symfony/translation": "^6.0",
+    "symfony/process": "^6.4"
   },
   "autoload": {
     "psr-4": {

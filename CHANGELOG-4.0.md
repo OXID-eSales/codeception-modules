@@ -1,5 +1,10 @@
 # Change Log for OXID eShop Codeception Modules
 
+## v4.3.1 - Unreleased
+
+### Fixed
+- Add dependency on symfony/process
+
 ## v4.3.0 - 2025-10-14
 
 ### Added
