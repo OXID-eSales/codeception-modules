@@ -1,7 +1,9 @@
 # Change Log for OXID eShop Codeception Modules
 
 ## v8.0.0-alpha.3 - Unreleased
-*Compilation release*
+
+### Added
+- `ThemeSettingTrait` for managing theme YAML configuration
 
 ### Added
 - Methods to mark the current admin edit-frame document and wait until its replacement is fully loaded
