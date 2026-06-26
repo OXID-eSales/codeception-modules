@@ -66,6 +66,11 @@ class Oxideshop extends Module implements DependsOnModule
     public function clearShopCache(): void
     {
         $this->webDriver->_restart();
+        $this->clearShopCachePreservingSession();
+    }
+
+    public function clearShopCachePreservingSession(): void
+    {
         $this->processConsoleCommand('oe:cache:clear');
     }
 

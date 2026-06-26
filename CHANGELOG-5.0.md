@@ -5,6 +5,8 @@
 
 ### Added
 - Methods to mark the current admin edit-frame document and wait until its replacement is fully loaded
+- `ThemeSettingTrait` for managing theme YAML configuration
+- Method to clear the shop cache without restarting the browser session
 
 ### Changed
 - Default timeout for the `waitFor*` element and text methods is now 30 seconds
