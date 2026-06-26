@@ -1,7 +1,9 @@
 # Change Log for OXID eShop Codeception Modules
 
 ## v8.0.0-alpha.3 - Unreleased
-*Compilation release*
+
+### Added
+- `ThemeSettingTrait` for managing theme YAML configuration
 
 ## v8.0.0-alpha.2 - 2026-02-12
 *Compilation release*
