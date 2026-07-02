@@ -3,6 +3,9 @@
 ## v8.0.0-alpha.3 - Unreleased
 *Compilation release*
 
+### Changed
+- Default timeout for the `waitFor*` element and text methods is now 30 seconds
+
 ## v8.0.0-alpha.2 - 2026-02-12
 *Compilation release*
 

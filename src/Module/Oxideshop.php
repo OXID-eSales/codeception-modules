@@ -162,6 +162,31 @@ window.XMLHttpRequest = new Proxy(window.XMLHttpRequest, {
         });
     }
 
+    public function waitForElement($element, int $timeout = 30): void
+    {
+        $this->webDriver->waitForElement($element, $timeout);
+    }
+
+    public function waitForElementVisible($element, int $timeout = 30): void
+    {
+        $this->webDriver->waitForElementVisible($element, $timeout);
+    }
+
+    public function waitForElementNotVisible($element, int $timeout = 30): void
+    {
+        $this->webDriver->waitForElementNotVisible($element, $timeout);
+    }
+
+    public function waitForElementClickable($element, int $timeout = 30): void
+    {
+        $this->webDriver->waitForElementClickable($element, $timeout);
+    }
+
+    public function waitForText(string $text, int $timeout = 30, $selector = null): void
+    {
+        $this->webDriver->waitForText($text, $timeout, $selector);
+    }
+
     public function seePageHasElement($element): bool
     {
         return count($this->getModule('WebDriver')->_findElements($element)) > 0;
