@@ -33,7 +33,13 @@ trait ThemeSettingTrait
         $target = $this->getThemeConfigurationPath($themeId, $shopId);
 
         $data = Yaml::parseFile($source);
+        $metadata = Yaml::parseFile(Path::join(Path::getDirectory($source), 'metadata.yaml'));
         $data['activated'] = true;
+        $data['title'] = $metadata['title'] ?? '';
+        $data['source'] = Path::makeRelative(
+            Path::getDirectory($source),
+            (new BasicContext())->getShopRootPath()
+        );
 
         $filesystem = new Filesystem();
         $filesystem->mkdir(Path::getDirectory($target));
