@@ -60,6 +60,37 @@ class OxideshopAdmin extends Module implements DependsOnModule
         $this->selectFrame(self::FRAME_EDIT);
     }
 
+    public function markEditFrameDocument(): string
+    {
+        $documentMarker = 'edit_frame_' . md5(uniqid(more_entropy: true));
+
+        $this->webdriver->executeJS(
+            'top.basefrm.edit.document[arguments[0]] = true;',
+            [$documentMarker]
+        );
+
+        return $documentMarker;
+    }
+
+    public function waitForEditFrameReload(string $documentMarker): void
+    {
+        $encodedDocumentMarker = json_encode($documentMarker, JSON_THROW_ON_ERROR);
+
+        $this->webdriver->switchToFrame();
+        $this->webdriver->waitForJS(
+            script: <<<JS
+            return Boolean(
+                top.basefrm
+                && top.basefrm.edit
+                && top.basefrm.edit.document[$encodedDocumentMarker] !== true
+                && top.basefrm.edit.document.readyState === 'complete'
+            );
+            JS,
+            timeout: 30
+        );
+        $this->selectEditFrame();
+    }
+
     public function selectNavigationFrame(): void
     {
         $this->selectFrame(self::FRAME_ADMINNAV);

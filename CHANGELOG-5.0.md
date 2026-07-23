@@ -3,6 +3,9 @@
 ## v8.0.0-alpha.3 - Unreleased
 *Compilation release*
 
+### Added
+- Methods to mark the current admin edit-frame document and wait until its replacement is fully loaded
+
 ### Changed
 - Default timeout for the `waitFor*` element and text methods is now 30 seconds
 
