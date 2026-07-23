@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\Codeception\Module;
 
+use OxidEsales\EshopCommunity\Internal\Framework\Env\EnvUrlFormatter;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContext;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
@@ -16,10 +17,10 @@ use Symfony\Component\Yaml\Yaml;
 
 trait ThemeSettingTrait
 {
-    private string $themeConfigBackupPath = '';
+    private const BACKUP_SUFFIX = '.testing-backup';
 
-    private string $themeConfigYamlPath = '';
-    private bool $themeConfigExistedBefore = false;
+    private string $themeConfigurationPath = '';
+    private string $themeEnvironmentConfigurationPath = '';
 
     public function installThemeConfiguration(string $themeId = 'apex', int $shopId = 1): void
     {
@@ -48,57 +49,72 @@ trait ThemeSettingTrait
 
     public function backupThemeConfiguration(string $themeId = 'apex', int $shopId = 1): void
     {
-        $this->themeConfigYamlPath = $this->getThemeConfigurationPath($themeId, $shopId);
-        $this->themeConfigBackupPath = $this->themeConfigYamlPath . '.testing-backup';
-
-        $filesystem = new Filesystem();
-        $this->themeConfigExistedBefore = $filesystem->exists($this->themeConfigYamlPath);
-        if ($this->themeConfigExistedBefore) {
-            $filesystem->copy($this->themeConfigYamlPath, $this->themeConfigBackupPath, true);
-        }
+        $this->themeConfigurationPath = $this->getThemeConfigurationPath($themeId, $shopId);
+        $this->backupConfiguration($this->themeConfigurationPath);
     }
 
     public function restoreThemeConfiguration(): void
     {
-        if ($this->themeConfigBackupPath === '') {
-            return;
+        if ($this->themeConfigurationPath !== '') {
+            $this->restoreConfiguration($this->themeConfigurationPath);
+            $this->clearShopCache();
         }
-
-        $filesystem = new Filesystem();
-        if ($this->themeConfigExistedBefore && $filesystem->exists($this->themeConfigBackupPath)) {
-            $filesystem->copy($this->themeConfigBackupPath, $this->themeConfigYamlPath, true);
-        } elseif (!$this->themeConfigExistedBefore && $filesystem->exists($this->themeConfigYamlPath)) {
-            $filesystem->remove($this->themeConfigYamlPath);
-        }
-
-        $this->getModule(Oxideshop::class)->clearShopCachePreservingSession();
     }
 
     public function cleanupThemeConfigurationBackup(): void
     {
-        if ($this->themeConfigBackupPath === '') {
-            return;
+        if ($this->themeConfigurationPath !== '') {
+            $this->cleanupConfigurationBackup($this->themeConfigurationPath);
         }
+    }
 
-        $filesystem = new Filesystem();
-        if ($filesystem->exists($this->themeConfigBackupPath)) {
-            $filesystem->remove($this->themeConfigBackupPath);
+    public function backupThemeEnvironmentConfiguration(string $themeId = 'apex', int $shopId = 1): void
+    {
+        $this->themeEnvironmentConfigurationPath = $this->getThemeEnvironmentConfigurationPath($themeId, $shopId);
+        $this->backupConfiguration($this->themeEnvironmentConfigurationPath);
+    }
+
+    public function restoreThemeEnvironmentConfiguration(): void
+    {
+        if ($this->themeEnvironmentConfigurationPath !== '') {
+            $this->restoreConfiguration($this->themeEnvironmentConfigurationPath);
+            $this->clearShopCache();
         }
+    }
+
+    public function cleanupThemeEnvironmentConfigurationBackup(): void
+    {
+        if ($this->themeEnvironmentConfigurationPath !== '') {
+            $this->cleanupConfigurationBackup($this->themeEnvironmentConfigurationPath);
+        }
+    }
+
+    public function clearThemeEnvironmentConfiguration(string $themeId = 'apex', int $shopId = 1): void
+    {
+        (new Filesystem())->remove($this->getThemeEnvironmentConfigurationPath($themeId, $shopId));
+        $this->clearShopCache();
     }
 
     public function updateThemeSetting(string $name, mixed $value, string $themeId = 'apex', int $shopId = 1): void
     {
-        $yamlPath = $this->getThemeConfigurationPath($themeId, $shopId);
+        $this->updateSettingValue(
+            $this->getThemeConfigurationPath($themeId, $shopId),
+            $name,
+            $value
+        );
+    }
 
-        $filesystem = new Filesystem();
-        $filesystem->mkdir(Path::getDirectory($yamlPath));
-
-        $data = $filesystem->exists($yamlPath) ? Yaml::parseFile($yamlPath) : [];
-        $data['themeSettings'][$name]['value'] = $value;
-
-        $filesystem->dumpFile($yamlPath, Yaml::dump($data, 10, 2));
-
-        $this->getModule(Oxideshop::class)->clearShopCachePreservingSession();
+    public function updateThemeEnvironmentSetting(
+        string $name,
+        mixed $value,
+        string $themeId = 'apex',
+        int $shopId = 1
+    ): void {
+        $this->updateSettingValue(
+            $this->getThemeEnvironmentConfigurationPath($themeId, $shopId),
+            $name,
+            $value
+        );
     }
 
     private function getThemeConfigurationPath(string $themeId, int $shopId): string
@@ -108,5 +124,66 @@ trait ThemeSettingTrait
             'themes',
             $themeId . '.yaml'
         );
+    }
+
+    private function getThemeEnvironmentConfigurationPath(string $themeId, int $shopId): string
+    {
+        return Path::join(
+            EnvUrlFormatter::toEnvUrl((new BasicContext())->getProjectConfigurationDirectory()),
+            'shops',
+            (string) $shopId,
+            'themes',
+            $themeId . '.yaml'
+        );
+    }
+
+    private function backupConfiguration(string $path): void
+    {
+        $filesystem = new Filesystem();
+        $backupPath = $this->getConfigurationBackupPath($path);
+        $filesystem->remove($backupPath);
+
+        if ($filesystem->exists($path)) {
+            $filesystem->copy($path, $backupPath, true);
+        }
+    }
+
+    private function restoreConfiguration(string $path): void
+    {
+        $filesystem = new Filesystem();
+        $backupPath = $this->getConfigurationBackupPath($path);
+
+        if ($filesystem->exists($backupPath)) {
+            $filesystem->copy($backupPath, $path, true);
+        } else {
+            $filesystem->remove($path);
+        }
+    }
+
+    private function cleanupConfigurationBackup(string $path): void
+    {
+        (new Filesystem())->remove($this->getConfigurationBackupPath($path));
+    }
+
+    private function getConfigurationBackupPath(string $path): string
+    {
+        return $path . self::BACKUP_SUFFIX;
+    }
+
+    private function updateSettingValue(string $path, string $name, mixed $value): void
+    {
+        $filesystem = new Filesystem();
+        $filesystem->mkdir(Path::getDirectory($path));
+
+        $data = $filesystem->exists($path) ? Yaml::parseFile($path) : [];
+        $data['themeSettings'][$name]['value'] = $value;
+
+        $filesystem->dumpFile($path, Yaml::dump($data, 10, 2));
+        $this->clearShopCache();
+    }
+
+    private function clearShopCache(): void
+    {
+        $this->getModule(Oxideshop::class)->clearShopCachePreservingSession();
     }
 }
