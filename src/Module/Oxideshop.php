@@ -98,7 +98,6 @@ class Oxideshop extends Module implements DependsOnModule
     public function waitForPageLoad(int $timeout = 60): void
     {
         $this->waitForDocumentReadyState($timeout);
-        $this->waitForAjax($timeout);
     }
 
     public function waitForDocumentReadyState(int $timeout = 60): void
