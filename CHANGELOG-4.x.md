@@ -1,5 +1,10 @@
 # Change Log for OXID eShop Codeception Modules
 
+## Unreleased
+
+### Removed
+- Deprecated `waitForAjax()` method and its usage in `waitForPageLoad()`
+
 ## v4.3.1 - 2026-04-08
 
 ### Fixed

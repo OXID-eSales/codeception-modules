@@ -87,18 +87,9 @@ class Oxideshop extends Module implements DependsOnModule
         return trim(preg_replace("/[ \t\r\n]+/", ' ', $line));
     }
 
-    /**
-     * @deprecated method will be removed in next major
-     */
-    public function waitForAjax(int $timeout = 60): void
-    {
-        $this->webDriver->wait(2);
-    }
-
     public function waitForPageLoad(int $timeout = 60): void
     {
         $this->waitForDocumentReadyState($timeout);
-        $this->waitForAjax($timeout);
     }
 
     public function waitForDocumentReadyState(int $timeout = 60): void
