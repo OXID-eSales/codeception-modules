@@ -10,6 +10,7 @@
 
 ### Changed
 - Default timeout for the `waitFor*` element and text methods is now 30 seconds
+- `ThemeSettingTrait::installThemeConfiguration()` reads the theme files from the directory of the theme installed in any shop, or from the theme package in the vendor directory, instead of `source/Application/views`
 
 ## v8.0.0-alpha.2 - 2026-02-12
 *Compilation release*

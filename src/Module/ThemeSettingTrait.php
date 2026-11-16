@@ -11,6 +11,7 @@ namespace OxidEsales\Codeception\Module;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Env\EnvUrlFormatter;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContext;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
@@ -24,20 +25,14 @@ trait ThemeSettingTrait
 
     public function installThemeConfiguration(string $themeId = 'apex', int $shopId = 1): void
     {
-        $source = Path::join(
-            (new BasicContext())->getSourcePath(),
-            'Application',
-            'views',
-            $themeId,
-            'config.yaml'
-        );
+        $themeDirectory = $this->getThemeDirectory($themeId);
         $target = $this->getThemeConfigurationPath($themeId, $shopId);
 
-        $data = Yaml::parseFile($source);
-        $metadata = Yaml::parseFile(Path::join(Path::getDirectory($source), 'metadata.yaml'));
+        $data = Yaml::parseFile(Path::join($themeDirectory, 'config.yaml'));
+        $metadata = Yaml::parseFile(Path::join($themeDirectory, 'metadata.yaml'));
         $data['title'] = $metadata['title'] ?? '';
         $data['source'] = Path::makeRelative(
-            Path::getDirectory($source),
+            $themeDirectory,
             (new BasicContext())->getShopRootPath()
         );
 
@@ -109,6 +104,38 @@ trait ThemeSettingTrait
             $name,
             $value
         );
+    }
+
+    private function getThemeDirectory(string $themeId): string
+    {
+        $configurationFiles = glob(Path::join(
+            (new BasicContext())->getProjectConfigurationDirectory(),
+            'shops',
+            '*',
+            'themes',
+            $themeId . '.yaml'
+        ));
+        foreach ($configurationFiles ?: [] as $configurationFile) {
+            $source = Yaml::parseFile($configurationFile)['source'] ?? '';
+            $themeDirectory = Path::join((new BasicContext())->getShopRootPath(), $source);
+            if ($source !== '' && is_file(Path::join($themeDirectory, 'metadata.yaml'))) {
+                return $themeDirectory;
+            }
+        }
+
+        return $this->getThemePackageDirectory($themeId);
+    }
+
+    private function getThemePackageDirectory(string $themeId): string
+    {
+        $metadataFiles = glob(Path::join((new BasicContext())->getVendorPath(), '*', '*', 'metadata.yaml'));
+        foreach ($metadataFiles ?: [] as $metadataFile) {
+            if ((Yaml::parseFile($metadataFile)['id'] ?? '') === $themeId) {
+                return Path::getDirectory($metadataFile);
+            }
+        }
+
+        throw new RuntimeException(sprintf('Theme "%s" is not found.', $themeId));
     }
 
     private function getThemeConfigurationPath(string $themeId, int $shopId): string
